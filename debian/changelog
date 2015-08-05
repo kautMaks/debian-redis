@@ -1,3 +1,19 @@
+redis (2:3.0.3-3) UNRELEASED; urgency=medium
+
+  * Replace ExecStop in systemd configuration with TimeoutStopSpec. Calls to
+    `redis-cli shutdown` were not reliable if the port/UNIX socket had changed
+    from the defaults (or is not accessible due to firewalling, permissions,
+    etc.)
+
+    Note that we cannot simply remove ExecStop (hence TimeoutStopSpec) as we
+    must wait for the server to fully shutdown - it may not have finished
+    writing the dump file to disk and thus we would be risking silent data loss
+    if it is SIGKILL'd.
+
+    Thanks to Chris Kuehl <ckuehl@ocf.berkeley.edu>. (Closes: #794437)
+
+ -- Chris Lamb <lamby@debian.org>  Wed, 05 Aug 2015 14:34:59 +0100
+
 redis (2:3.0.3-2) unstable; urgency=medium
 
   * Switch from RuntimeDirectory to systemd-tempfiles.

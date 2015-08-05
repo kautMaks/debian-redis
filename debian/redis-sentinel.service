@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=forking
 ExecStart=/usr/bin/redis-sentinel /etc/redis/sentinel.conf
-ExecStop=/usr/bin/redis-cli -p 26379 shutdown
+TimeoutStopSec=0
 Restart=always
 User=redis
 Group=redis
