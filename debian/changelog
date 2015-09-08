@@ -1,11 +1,11 @@
-redis (2:3.0.4-1) UNRELEASED; urgency=medium
+redis (2:3.0.4-1) unstable; urgency=medium
 
   * New upstream release.
     - Sync debian/redis.conf.
   * Put --system further on to avoid issues with lintian false-positive (and to
     match the manpage).
 
- -- Chris Lamb <lamby@debian.org>  Tue, 08 Sep 2015 09:53:18 +0100
+ -- Chris Lamb <lamby@debian.org>  Tue, 08 Sep 2015 10:28:51 +0100
 
 redis (2:3.0.3-3) unstable; urgency=medium
 
