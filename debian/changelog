@@ -1,6 +1,7 @@
 redis (2:3.0.4-1) UNRELEASED; urgency=medium
 
   * New upstream release.
+    - Sync debian/redis.conf.
   * Put --system further on to avoid issues with lintian false-positive (and to
     match the manpage).
 
