@@ -5,6 +5,7 @@ After=network.target
 [Service]
 Type=forking
 ExecStart=/usr/bin/redis-sentinel /etc/redis/sentinel.conf
+PIDFile=/var/run/redis/redis-sentinel.pid
 TimeoutStopSec=0
 Restart=always
 User=redis
