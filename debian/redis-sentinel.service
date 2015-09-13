@@ -17,5 +17,16 @@ ExecStop=-/bin/run-parts --verbose /etc/redis/redis-sentinel.pre-down.d
 ExecStop=/bin/kill -TERM $MAINPID
 ExecStopPost=-/bin/run-parts --verbose /etc/redis/redis-sentinel.post-down.d
 
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectHome=yes
+ProtectSystem=full
+ReadOnlyDirectories=/
+ReadWriteDirectories=-/var/lib/redis
+ReadWriteDirectories=-/var/log/redis
+ReadWriteDirectories=-/var/run/redis
+# Writes its own config file
+ReadWriteDirectories=-/etc/redis/sentinel.conf
+
 [Install]
 WantedBy=multi-user.target

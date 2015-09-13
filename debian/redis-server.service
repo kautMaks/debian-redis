@@ -17,5 +17,14 @@ ExecStop=-/bin/run-parts --verbose /etc/redis/redis-server.pre-down.d
 ExecStop=/bin/kill -TERM $MAINPID
 ExecStopPost=-/bin/run-parts --verbose /etc/redis/redis-server.post-down.d
 
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectHome=yes
+ProtectSystem=full
+ReadOnlyDirectories=/
+ReadWriteDirectories=-/var/lib/redis
+ReadWriteDirectories=-/var/log/redis
+ReadWriteDirectories=-/var/run/redis
+
 [Install]
 WantedBy=multi-user.target

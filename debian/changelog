@@ -6,6 +6,7 @@ redis (2:3.0.4-2) UNRELEASED; urgency=medium
     - Document this in 00_example files.
   * Execute run-parts files under systemd, not just under sysvinit.
     (Closes: #798771)
+  * Add rudimentary hardening under systemd. (Closes: #798770)
 
  -- Chris Lamb <lamby@debian.org>  Sat, 12 Sep 2015 14:13:10 +0100
 
