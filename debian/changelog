@@ -3,7 +3,7 @@ redis (2:3.0.4-4) unstable; urgency=medium
   * Make the parallel change in 2:30.4-3 to redis-server's initscript, not just
     redis-sentinel's.
 
- -- Chris Lamb <lamby@debian.org>  Mon, 14 Sep 2015 14:17:15 +0100
+ -- Chris Lamb <lamby@debian.org>  Mon, 14 Sep 2015 14:18:42 +0100
 
 redis (2:3.0.4-3) unstable; urgency=medium
 
