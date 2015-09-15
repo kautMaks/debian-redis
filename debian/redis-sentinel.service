@@ -27,6 +27,7 @@ ReadWriteDirectories=-/var/log/redis
 ReadWriteDirectories=-/var/run/redis
 # Writes its own config file
 ReadWriteDirectories=-/etc/redis/sentinel.conf
+CapabilityBoundingSet=~CAP_SYS_PTRACE
 
 [Install]
 WantedBy=multi-user.target
