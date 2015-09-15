@@ -30,3 +30,4 @@ CapabilityBoundingSet=~CAP_SYS_PTRACE
 
 [Install]
 WantedBy=multi-user.target
+Alias=redis.service
