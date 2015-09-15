@@ -1,6 +1,7 @@
 redis (2:3.0.4-5) UNRELEASED; urgency=medium
 
   * Disable CAP_SYS_PTRACE in systemd service files
+  * Add Documentation= header to systemd service files.
 
  -- Chris Lamb <lamby@debian.org>  Tue, 15 Sep 2015 17:36:01 +0100
 
