@@ -1,4 +1,4 @@
-redis (2:3.0.4-5) UNRELEASED; urgency=medium
+redis (2:3.0.4-5) unstable; urgency=medium
 
   * Don't install /etc/redis/{redis,sentinel}.conf world-readable as they may
     contain passwords, additionally setting the ownership to ensure they can
@@ -7,7 +7,7 @@ redis (2:3.0.4-5) UNRELEASED; urgency=medium
   * Add Documentation= header to systemd service files.
   * Add a "redis" systemd unit alias.
 
- -- Chris Lamb <lamby@debian.org>  Tue, 15 Sep 2015 17:36:01 +0100
+ -- Chris Lamb <lamby@debian.org>  Tue, 29 Sep 2015 17:42:22 +0200
 
 redis (2:3.0.4-4) unstable; urgency=medium
 
