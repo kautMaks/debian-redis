@@ -1,11 +1,11 @@
-redis (2:3.0.4-6) UNRELEASED; urgency=medium
+redis (2:3.0.4-6) unstable; urgency=medium
 
   * Allow redis-sentinel to actually write to its own directory;
     ReadWriteDirectories cannot take a filename as I previously thought.
     Thanks to Bernd Zeimetz <b.zeimetz@conova.com> for the prompt report.
     (Closes: #799696)
 
- -- Chris Lamb <lamby@debian.org>  Tue, 29 Sep 2015 23:16:34 +0200
+ -- Chris Lamb <lamby@debian.org>  Tue, 29 Sep 2015 23:24:31 +0200
 
 redis (2:3.0.4-5) unstable; urgency=medium
 
