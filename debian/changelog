@@ -1,5 +1,8 @@
 redis (2:3.0.4-5) UNRELEASED; urgency=medium
 
+  * Don't install /etc/redis/{redis,sentinel}.conf world-readable as they may
+    contain passwords, additionally setting the ownership to ensure they can
+    read their own configuration. (Closes: #800435)
   * Disable CAP_SYS_PTRACE in systemd service files
   * Add Documentation= header to systemd service files.
   * Add a "redis" systemd unit alias.
