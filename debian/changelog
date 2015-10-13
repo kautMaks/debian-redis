@@ -1,3 +1,12 @@
+redis (2:3.0.4-8) UNRELEASED; urgency=medium
+
+  * Use `ProtectSystem=true` over `ProtectSystem=full` in
+    redis-sentinel.service so that it can write its own configuration file
+    under /etc. Thanks to Pete Hicks <jph@bebo.com> for the report and fix.
+    (Closes: #799696)
+
+ -- Chris Lamb <lamby@debian.org>  Tue, 13 Oct 2015 20:41:47 +0100
+
 redis (2:3.0.4-7) unstable; urgency=medium
 
   * Change the default (and commented-out) value for "unixsocket" from
