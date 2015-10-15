@@ -1,6 +1,7 @@
 redis (2:3.0.5-1) UNRELEASED; urgency=medium
 
   * New upstream release.
+    - Sync ./redis.conf and ./debian/redis.conf.
 
  -- Chris Lamb <lamby@debian.org>  Thu, 15 Oct 2015 16:10:21 +0100
 
