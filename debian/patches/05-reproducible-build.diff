@@ -1,5 +1,13 @@
+From: Chris Lamb <lamby@debian.org>
+Date: Fri, 30 Oct 2015 10:53:42 +0000
+Subject: reproducible-build
+
+---
+ src/mkreleasehdr.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
 diff --git a/src/mkreleasehdr.sh b/src/mkreleasehdr.sh
-index 1ae9588..f9cdd53 100755
+index 1ae9588..2b96a85 100755
 --- a/src/mkreleasehdr.sh
 +++ b/src/mkreleasehdr.sh
 @@ -1,7 +1,7 @@
