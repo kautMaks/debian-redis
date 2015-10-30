@@ -1,6 +1,7 @@
 redis (2:3.0.5-3) UNRELEASED; urgency=medium
 
   * Add a redis-sentinel.tmpfile matching redis-server.tmpfile.
+  * wrap-and-sort -sa
 
  -- Chris Lamb <lamby@debian.org>  Fri, 30 Oct 2015 10:47:48 +0000
 
