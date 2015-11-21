@@ -1,3 +1,10 @@
+redis (2:3.0.5-4) UNRELEASED; urgency=medium
+
+  * Correct call to /bin/kill in redis-{server,sentinel}.service to avoid
+    "kill: invalid argument T" messages when $MAINPID is not set.
+
+ -- Chris Lamb <lamby@debian.org>  Sat, 21 Nov 2015 16:07:48 +0200
+
 redis (2:3.0.5-3) unstable; urgency=medium
 
   * Add a redis-sentinel.tmpfile matching redis-server.tmpfile.
