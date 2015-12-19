@@ -3,4 +3,3 @@
 03-use-system-jemalloc.diff
 04-dpkg-buildflags.diff
 05-reproducible-build.diff
-06-CVE-2015-8080-Integer-wraparound-in-lua_struct.c-cau.patch

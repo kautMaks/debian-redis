@@ -1,6 +1,8 @@
 redis (2:3.0.6-1) UNRELEASED; urgency=medium
 
   * New upstream release.
+  * Drop 06-CVE-2015-8080-Integer-wraparound-in-lua_struct.c-cau.patch as an
+    equivalent change merged upstream.
 
  -- Chris Lamb <lamby@debian.org>  Sat, 19 Dec 2015 11:17:19 +0000
 
