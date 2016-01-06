@@ -6,6 +6,7 @@ Build-Depends:
  debhelper (>= 9),
  dh-systemd (>= 1.5),
  libjemalloc-dev [linux-any],
+ procps,
  tcl
 Standards-Version: 3.9.6
 Homepage: http://redis.io/

@@ -1,6 +1,7 @@
 redis (2:3.0.6-2) UNRELEASED; urgency=medium
 
   * Ensure that we always properly cleanup test processes (Closes: #808862)
+  * Add explicit Build-Depends on procps.
 
  -- Chris Lamb <lamby@debian.org>  Wed, 23 Dec 2015 22:15:11 +0000
 
