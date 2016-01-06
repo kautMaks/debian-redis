@@ -26,10 +26,8 @@ override_dh_auto_build:
 
 override_dh_auto_test:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-	./runtest || true
-	./runtest-sentinel || true
-	# Ensure that we always properly cleanup test processes
-	pkill -9 --full --uid $(shell id -u) --echo src/redis-server || true
+	./runtest
+	./runtest-sentinel
 endif
 
 override_dh_compress:
