@@ -1,3 +1,9 @@
+redis (2:3.0.6-3) UNRELEASED; urgency=medium
+
+  * Actually drop unused 05-reproducible-build.diff file.
+
+ -- Chris Lamb <lamby@debian.org>  Fri, 08 Jan 2016 11:52:02 +0000
+
 redis (2:3.0.6-2) unstable; urgency=medium
 
   * Ensure that we always properly cleanup test processes (Closes: #808862)
