@@ -1,6 +1,7 @@
 redis (2:3.0.6-3) UNRELEASED; urgency=medium
 
   * Actually drop unused 05-reproducible-build.diff file.
+  * Move to https Vcs-Git URI.
 
  -- Chris Lamb <lamby@debian.org>  Fri, 08 Jan 2016 11:52:02 +0000
 
