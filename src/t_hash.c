@@ -27,7 +27,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "server.h"
+#include "redis.h"
 #include <math.h>
 
 /*-----------------------------------------------------------------------------
@@ -40,13 +40,13 @@
 void hashTypeTryConversion(robj *o, robj **argv, int start, int end) {
     int i;
 
-    if (o->encoding != OBJ_ENCODING_ZIPLIST) return;
+    if (o->encoding != REDIS_ENCODING_ZIPLIST) return;
 
     for (i = start; i <= end; i++) {
         if (sdsEncodedObject(argv[i]) &&
             sdslen(argv[i]->ptr) > server.hash_max_ziplist_value)
         {
-            hashTypeConvert(o, OBJ_ENCODING_HT);
+            hashTypeConvert(o, REDIS_ENCODING_HT);
             break;
         }
     }
@@ -54,7 +54,7 @@ void hashTypeTryConversion(robj *o, robj **argv, int start, int end) {
 
 /* Encode given objects in-place when the hash uses a dict. */
 void hashTypeTryObjectEncoding(robj *subject, robj **o1, robj **o2) {
-    if (subject->encoding == OBJ_ENCODING_HT) {
+    if (subject->encoding == REDIS_ENCODING_HT) {
         if (o1) *o1 = tryObjectEncoding(*o1);
         if (o2) *o2 = tryObjectEncoding(*o2);
     }
@@ -70,7 +70,7 @@ int hashTypeGetFromZiplist(robj *o, robj *field,
     unsigned char *zl, *fptr = NULL, *vptr = NULL;
     int ret;
 
-    serverAssert(o->encoding == OBJ_ENCODING_ZIPLIST);
+    redisAssert(o->encoding == REDIS_ENCODING_ZIPLIST);
 
     field = getDecodedObject(field);
 
@@ -81,7 +81,7 @@ int hashTypeGetFromZiplist(robj *o, robj *field,
         if (fptr != NULL) {
             /* Grab pointer to the value (fptr points to the field) */
             vptr = ziplistNext(zl, fptr);
-            serverAssert(vptr != NULL);
+            redisAssert(vptr != NULL);
         }
     }
 
@@ -89,7 +89,7 @@ int hashTypeGetFromZiplist(robj *o, robj *field,
 
     if (vptr != NULL) {
         ret = ziplistGet(vptr, vstr, vlen, vll);
-        serverAssert(ret);
+        redisAssert(ret);
         return 0;
     }
 
@@ -101,7 +101,7 @@ int hashTypeGetFromZiplist(robj *o, robj *field,
 int hashTypeGetFromHashTable(robj *o, robj *field, robj **value) {
     dictEntry *de;
 
-    serverAssert(o->encoding == OBJ_ENCODING_HT);
+    redisAssert(o->encoding == REDIS_ENCODING_HT);
 
     de = dictFind(o->ptr, field);
     if (de == NULL) return -1;
@@ -118,7 +118,7 @@ int hashTypeGetFromHashTable(robj *o, robj *field, robj **value) {
 robj *hashTypeGetObject(robj *o, robj *field) {
     robj *value = NULL;
 
-    if (o->encoding == OBJ_ENCODING_ZIPLIST) {
+    if (o->encoding == REDIS_ENCODING_ZIPLIST) {
         unsigned char *vstr = NULL;
         unsigned int vlen = UINT_MAX;
         long long vll = LLONG_MAX;
@@ -130,7 +130,8 @@ robj *hashTypeGetObject(robj *o, robj *field) {
                 value = createStringObjectFromLongLong(vll);
             }
         }
-    } else if (o->encoding == OBJ_ENCODING_HT) {
+
+    } else if (o->encoding == REDIS_ENCODING_HT) {
         robj *aux;
 
         if (hashTypeGetFromHashTable(o, field, &aux) == 0) {
@@ -138,49 +139,26 @@ robj *hashTypeGetObject(robj *o, robj *field) {
             value = aux;
         }
     } else {
-        serverPanic("Unknown hash encoding");
+        redisPanic("Unknown hash encoding");
     }
     return value;
-}
-
-/* Higher level function using hashTypeGet*() to return the length of the
- * object associated with the requested field, or 0 if the field does not
- * exist. */
-size_t hashTypeGetValueLength(robj *o, robj *field) {
-    size_t len = 0;
-    if (o->encoding == OBJ_ENCODING_ZIPLIST) {
-        unsigned char *vstr = NULL;
-        unsigned int vlen = UINT_MAX;
-        long long vll = LLONG_MAX;
-
-        if (hashTypeGetFromZiplist(o, field, &vstr, &vlen, &vll) == 0)
-            len = vstr ? vlen : sdigits10(vll);
-    } else if (o->encoding == OBJ_ENCODING_HT) {
-        robj *aux;
-
-        if (hashTypeGetFromHashTable(o, field, &aux) == 0)
-            len = stringObjectLen(aux);
-    } else {
-        serverPanic("Unknown hash encoding");
-    }
-    return len;
 }
 
 /* Test if the specified field exists in the given hash. Returns 1 if the field
  * exists, and 0 when it doesn't. */
 int hashTypeExists(robj *o, robj *field) {
-    if (o->encoding == OBJ_ENCODING_ZIPLIST) {
+    if (o->encoding == REDIS_ENCODING_ZIPLIST) {
         unsigned char *vstr = NULL;
         unsigned int vlen = UINT_MAX;
         long long vll = LLONG_MAX;
 
         if (hashTypeGetFromZiplist(o, field, &vstr, &vlen, &vll) == 0) return 1;
-    } else if (o->encoding == OBJ_ENCODING_HT) {
+    } else if (o->encoding == REDIS_ENCODING_HT) {
         robj *aux;
 
         if (hashTypeGetFromHashTable(o, field, &aux) == 0) return 1;
     } else {
-        serverPanic("Unknown hash encoding");
+        redisPanic("Unknown hash encoding");
     }
     return 0;
 }
@@ -192,7 +170,7 @@ int hashTypeExists(robj *o, robj *field) {
 int hashTypeSet(robj *o, robj *field, robj *value) {
     int update = 0;
 
-    if (o->encoding == OBJ_ENCODING_ZIPLIST) {
+    if (o->encoding == REDIS_ENCODING_ZIPLIST) {
         unsigned char *zl, *fptr, *vptr;
 
         field = getDecodedObject(field);
@@ -205,7 +183,7 @@ int hashTypeSet(robj *o, robj *field, robj *value) {
             if (fptr != NULL) {
                 /* Grab pointer to the value (fptr points to the field) */
                 vptr = ziplistNext(zl, fptr);
-                serverAssert(vptr != NULL);
+                redisAssert(vptr != NULL);
                 update = 1;
 
                 /* Delete value */
@@ -227,8 +205,8 @@ int hashTypeSet(robj *o, robj *field, robj *value) {
 
         /* Check if the ziplist needs to be converted to a hash table */
         if (hashTypeLength(o) > server.hash_max_ziplist_entries)
-            hashTypeConvert(o, OBJ_ENCODING_HT);
-    } else if (o->encoding == OBJ_ENCODING_HT) {
+            hashTypeConvert(o, REDIS_ENCODING_HT);
+    } else if (o->encoding == REDIS_ENCODING_HT) {
         if (dictReplace(o->ptr, field, value)) { /* Insert */
             incrRefCount(field);
         } else { /* Update */
@@ -236,7 +214,7 @@ int hashTypeSet(robj *o, robj *field, robj *value) {
         }
         incrRefCount(value);
     } else {
-        serverPanic("Unknown hash encoding");
+        redisPanic("Unknown hash encoding");
     }
     return update;
 }
@@ -246,7 +224,7 @@ int hashTypeSet(robj *o, robj *field, robj *value) {
 int hashTypeDelete(robj *o, robj *field) {
     int deleted = 0;
 
-    if (o->encoding == OBJ_ENCODING_ZIPLIST) {
+    if (o->encoding == REDIS_ENCODING_ZIPLIST) {
         unsigned char *zl, *fptr;
 
         field = getDecodedObject(field);
@@ -265,8 +243,8 @@ int hashTypeDelete(robj *o, robj *field) {
 
         decrRefCount(field);
 
-    } else if (o->encoding == OBJ_ENCODING_HT) {
-        if (dictDelete((dict*)o->ptr, field) == C_OK) {
+    } else if (o->encoding == REDIS_ENCODING_HT) {
+        if (dictDelete((dict*)o->ptr, field) == REDIS_OK) {
             deleted = 1;
 
             /* Always check if the dictionary needs a resize after a delete. */
@@ -274,7 +252,7 @@ int hashTypeDelete(robj *o, robj *field) {
         }
 
     } else {
-        serverPanic("Unknown hash encoding");
+        redisPanic("Unknown hash encoding");
     }
 
     return deleted;
@@ -284,12 +262,12 @@ int hashTypeDelete(robj *o, robj *field) {
 unsigned long hashTypeLength(robj *o) {
     unsigned long length = ULONG_MAX;
 
-    if (o->encoding == OBJ_ENCODING_ZIPLIST) {
+    if (o->encoding == REDIS_ENCODING_ZIPLIST) {
         length = ziplistLen(o->ptr) / 2;
-    } else if (o->encoding == OBJ_ENCODING_HT) {
+    } else if (o->encoding == REDIS_ENCODING_HT) {
         length = dictSize((dict*)o->ptr);
     } else {
-        serverPanic("Unknown hash encoding");
+        redisPanic("Unknown hash encoding");
     }
 
     return length;
@@ -300,30 +278,30 @@ hashTypeIterator *hashTypeInitIterator(robj *subject) {
     hi->subject = subject;
     hi->encoding = subject->encoding;
 
-    if (hi->encoding == OBJ_ENCODING_ZIPLIST) {
+    if (hi->encoding == REDIS_ENCODING_ZIPLIST) {
         hi->fptr = NULL;
         hi->vptr = NULL;
-    } else if (hi->encoding == OBJ_ENCODING_HT) {
+    } else if (hi->encoding == REDIS_ENCODING_HT) {
         hi->di = dictGetIterator(subject->ptr);
     } else {
-        serverPanic("Unknown hash encoding");
+        redisPanic("Unknown hash encoding");
     }
 
     return hi;
 }
 
 void hashTypeReleaseIterator(hashTypeIterator *hi) {
-    if (hi->encoding == OBJ_ENCODING_HT) {
+    if (hi->encoding == REDIS_ENCODING_HT) {
         dictReleaseIterator(hi->di);
     }
 
     zfree(hi);
 }
 
-/* Move to the next entry in the hash. Return C_OK when the next entry
- * could be found and C_ERR when the iterator reaches the end. */
+/* Move to the next entry in the hash. Return REDIS_OK when the next entry
+ * could be found and REDIS_ERR when the iterator reaches the end. */
 int hashTypeNext(hashTypeIterator *hi) {
-    if (hi->encoding == OBJ_ENCODING_ZIPLIST) {
+    if (hi->encoding == REDIS_ENCODING_ZIPLIST) {
         unsigned char *zl;
         unsigned char *fptr, *vptr;
 
@@ -333,28 +311,28 @@ int hashTypeNext(hashTypeIterator *hi) {
 
         if (fptr == NULL) {
             /* Initialize cursor */
-            serverAssert(vptr == NULL);
+            redisAssert(vptr == NULL);
             fptr = ziplistIndex(zl, 0);
         } else {
             /* Advance cursor */
-            serverAssert(vptr != NULL);
+            redisAssert(vptr != NULL);
             fptr = ziplistNext(zl, vptr);
         }
-        if (fptr == NULL) return C_ERR;
+        if (fptr == NULL) return REDIS_ERR;
 
         /* Grab pointer to the value (fptr points to the field) */
         vptr = ziplistNext(zl, fptr);
-        serverAssert(vptr != NULL);
+        redisAssert(vptr != NULL);
 
         /* fptr, vptr now point to the first or next pair */
         hi->fptr = fptr;
         hi->vptr = vptr;
-    } else if (hi->encoding == OBJ_ENCODING_HT) {
-        if ((hi->de = dictNext(hi->di)) == NULL) return C_ERR;
+    } else if (hi->encoding == REDIS_ENCODING_HT) {
+        if ((hi->de = dictNext(hi->di)) == NULL) return REDIS_ERR;
     } else {
-        serverPanic("Unknown hash encoding");
+        redisPanic("Unknown hash encoding");
     }
-    return C_OK;
+    return REDIS_OK;
 }
 
 /* Get the field or value at iterator cursor, for an iterator on a hash value
@@ -366,23 +344,23 @@ void hashTypeCurrentFromZiplist(hashTypeIterator *hi, int what,
 {
     int ret;
 
-    serverAssert(hi->encoding == OBJ_ENCODING_ZIPLIST);
+    redisAssert(hi->encoding == REDIS_ENCODING_ZIPLIST);
 
-    if (what & OBJ_HASH_KEY) {
+    if (what & REDIS_HASH_KEY) {
         ret = ziplistGet(hi->fptr, vstr, vlen, vll);
-        serverAssert(ret);
+        redisAssert(ret);
     } else {
         ret = ziplistGet(hi->vptr, vstr, vlen, vll);
-        serverAssert(ret);
+        redisAssert(ret);
     }
 }
 
 /* Get the field or value at iterator cursor, for an iterator on a hash value
  * encoded as a ziplist. Prototype is similar to `hashTypeGetFromHashTable`. */
 void hashTypeCurrentFromHashTable(hashTypeIterator *hi, int what, robj **dst) {
-    serverAssert(hi->encoding == OBJ_ENCODING_HT);
+    redisAssert(hi->encoding == REDIS_ENCODING_HT);
 
-    if (what & OBJ_HASH_KEY) {
+    if (what & REDIS_HASH_KEY) {
         *dst = dictGetKey(hi->de);
     } else {
         *dst = dictGetVal(hi->de);
@@ -395,7 +373,7 @@ void hashTypeCurrentFromHashTable(hashTypeIterator *hi, int what, robj **dst) {
 robj *hashTypeCurrentObject(hashTypeIterator *hi, int what) {
     robj *dst;
 
-    if (hi->encoding == OBJ_ENCODING_ZIPLIST) {
+    if (hi->encoding == REDIS_ENCODING_ZIPLIST) {
         unsigned char *vstr = NULL;
         unsigned int vlen = UINT_MAX;
         long long vll = LLONG_MAX;
@@ -406,22 +384,22 @@ robj *hashTypeCurrentObject(hashTypeIterator *hi, int what) {
         } else {
             dst = createStringObjectFromLongLong(vll);
         }
-    } else if (hi->encoding == OBJ_ENCODING_HT) {
+    } else if (hi->encoding == REDIS_ENCODING_HT) {
         hashTypeCurrentFromHashTable(hi, what, &dst);
         incrRefCount(dst);
     } else {
-        serverPanic("Unknown hash encoding");
+        redisPanic("Unknown hash encoding");
     }
     return dst;
 }
 
-robj *hashTypeLookupWriteOrCreate(client *c, robj *key) {
+robj *hashTypeLookupWriteOrCreate(redisClient *c, robj *key) {
     robj *o = lookupKeyWrite(c->db,key);
     if (o == NULL) {
         o = createHashObject();
         dbAdd(c->db,key,o);
     } else {
-        if (o->type != OBJ_HASH) {
+        if (o->type != REDIS_HASH) {
             addReply(c,shared.wrongtypeerr);
             return NULL;
         }
@@ -430,12 +408,12 @@ robj *hashTypeLookupWriteOrCreate(client *c, robj *key) {
 }
 
 void hashTypeConvertZiplist(robj *o, int enc) {
-    serverAssert(o->encoding == OBJ_ENCODING_ZIPLIST);
+    redisAssert(o->encoding == REDIS_ENCODING_ZIPLIST);
 
-    if (enc == OBJ_ENCODING_ZIPLIST) {
+    if (enc == REDIS_ENCODING_ZIPLIST) {
         /* Nothing to do... */
 
-    } else if (enc == OBJ_ENCODING_HT) {
+    } else if (enc == REDIS_ENCODING_HT) {
         hashTypeIterator *hi;
         dict *dict;
         int ret;
@@ -443,39 +421,39 @@ void hashTypeConvertZiplist(robj *o, int enc) {
         hi = hashTypeInitIterator(o);
         dict = dictCreate(&hashDictType, NULL);
 
-        while (hashTypeNext(hi) != C_ERR) {
+        while (hashTypeNext(hi) != REDIS_ERR) {
             robj *field, *value;
 
-            field = hashTypeCurrentObject(hi, OBJ_HASH_KEY);
+            field = hashTypeCurrentObject(hi, REDIS_HASH_KEY);
             field = tryObjectEncoding(field);
-            value = hashTypeCurrentObject(hi, OBJ_HASH_VALUE);
+            value = hashTypeCurrentObject(hi, REDIS_HASH_VALUE);
             value = tryObjectEncoding(value);
             ret = dictAdd(dict, field, value);
             if (ret != DICT_OK) {
-                serverLogHexDump(LL_WARNING,"ziplist with dup elements dump",
+                redisLogHexDump(REDIS_WARNING,"ziplist with dup elements dump",
                     o->ptr,ziplistBlobLen(o->ptr));
-                serverAssert(ret == DICT_OK);
+                redisAssert(ret == DICT_OK);
             }
         }
 
         hashTypeReleaseIterator(hi);
         zfree(o->ptr);
 
-        o->encoding = OBJ_ENCODING_HT;
+        o->encoding = REDIS_ENCODING_HT;
         o->ptr = dict;
 
     } else {
-        serverPanic("Unknown hash encoding");
+        redisPanic("Unknown hash encoding");
     }
 }
 
 void hashTypeConvert(robj *o, int enc) {
-    if (o->encoding == OBJ_ENCODING_ZIPLIST) {
+    if (o->encoding == REDIS_ENCODING_ZIPLIST) {
         hashTypeConvertZiplist(o, enc);
-    } else if (o->encoding == OBJ_ENCODING_HT) {
-        serverPanic("Not implemented");
+    } else if (o->encoding == REDIS_ENCODING_HT) {
+        redisPanic("Not implemented");
     } else {
-        serverPanic("Unknown hash encoding");
+        redisPanic("Unknown hash encoding");
     }
 }
 
@@ -483,7 +461,7 @@ void hashTypeConvert(robj *o, int enc) {
  * Hash type commands
  *----------------------------------------------------------------------------*/
 
-void hsetCommand(client *c) {
+void hsetCommand(redisClient *c) {
     int update;
     robj *o;
 
@@ -493,11 +471,11 @@ void hsetCommand(client *c) {
     update = hashTypeSet(o,c->argv[2],c->argv[3]);
     addReply(c, update ? shared.czero : shared.cone);
     signalModifiedKey(c->db,c->argv[1]);
-    notifyKeyspaceEvent(NOTIFY_HASH,"hset",c->argv[1],c->db->id);
+    notifyKeyspaceEvent(REDIS_NOTIFY_HASH,"hset",c->argv[1],c->db->id);
     server.dirty++;
 }
 
-void hsetnxCommand(client *c) {
+void hsetnxCommand(redisClient *c) {
     robj *o;
     if ((o = hashTypeLookupWriteOrCreate(c,c->argv[1])) == NULL) return;
     hashTypeTryConversion(o,c->argv,2,3);
@@ -509,12 +487,12 @@ void hsetnxCommand(client *c) {
         hashTypeSet(o,c->argv[2],c->argv[3]);
         addReply(c, shared.cone);
         signalModifiedKey(c->db,c->argv[1]);
-        notifyKeyspaceEvent(NOTIFY_HASH,"hset",c->argv[1],c->db->id);
+        notifyKeyspaceEvent(REDIS_NOTIFY_HASH,"hset",c->argv[1],c->db->id);
         server.dirty++;
     }
 }
 
-void hmsetCommand(client *c) {
+void hmsetCommand(redisClient *c) {
     int i;
     robj *o;
 
@@ -531,19 +509,19 @@ void hmsetCommand(client *c) {
     }
     addReply(c, shared.ok);
     signalModifiedKey(c->db,c->argv[1]);
-    notifyKeyspaceEvent(NOTIFY_HASH,"hset",c->argv[1],c->db->id);
+    notifyKeyspaceEvent(REDIS_NOTIFY_HASH,"hset",c->argv[1],c->db->id);
     server.dirty++;
 }
 
-void hincrbyCommand(client *c) {
+void hincrbyCommand(redisClient *c) {
     long long value, incr, oldvalue;
     robj *o, *current, *new;
 
-    if (getLongLongFromObjectOrReply(c,c->argv[3],&incr,NULL) != C_OK) return;
+    if (getLongLongFromObjectOrReply(c,c->argv[3],&incr,NULL) != REDIS_OK) return;
     if ((o = hashTypeLookupWriteOrCreate(c,c->argv[1])) == NULL) return;
     if ((current = hashTypeGetObject(o,c->argv[2])) != NULL) {
         if (getLongLongFromObjectOrReply(c,current,&value,
-            "hash value is not an integer") != C_OK) {
+            "hash value is not an integer") != REDIS_OK) {
             decrRefCount(current);
             return;
         }
@@ -565,19 +543,19 @@ void hincrbyCommand(client *c) {
     decrRefCount(new);
     addReplyLongLong(c,value);
     signalModifiedKey(c->db,c->argv[1]);
-    notifyKeyspaceEvent(NOTIFY_HASH,"hincrby",c->argv[1],c->db->id);
+    notifyKeyspaceEvent(REDIS_NOTIFY_HASH,"hincrby",c->argv[1],c->db->id);
     server.dirty++;
 }
 
-void hincrbyfloatCommand(client *c) {
+void hincrbyfloatCommand(redisClient *c) {
     double long value, incr;
     robj *o, *current, *new, *aux;
 
-    if (getLongDoubleFromObjectOrReply(c,c->argv[3],&incr,NULL) != C_OK) return;
+    if (getLongDoubleFromObjectOrReply(c,c->argv[3],&incr,NULL) != REDIS_OK) return;
     if ((o = hashTypeLookupWriteOrCreate(c,c->argv[1])) == NULL) return;
     if ((current = hashTypeGetObject(o,c->argv[2])) != NULL) {
         if (getLongDoubleFromObjectOrReply(c,current,&value,
-            "hash value is not a valid float") != C_OK) {
+            "hash value is not a valid float") != REDIS_OK) {
             decrRefCount(current);
             return;
         }
@@ -592,7 +570,7 @@ void hincrbyfloatCommand(client *c) {
     hashTypeSet(o,c->argv[2],new);
     addReplyBulk(c,new);
     signalModifiedKey(c->db,c->argv[1]);
-    notifyKeyspaceEvent(NOTIFY_HASH,"hincrbyfloat",c->argv[1],c->db->id);
+    notifyKeyspaceEvent(REDIS_NOTIFY_HASH,"hincrbyfloat",c->argv[1],c->db->id);
     server.dirty++;
 
     /* Always replicate HINCRBYFLOAT as an HSET command with the final value
@@ -605,7 +583,7 @@ void hincrbyfloatCommand(client *c) {
     decrRefCount(new);
 }
 
-static void addHashFieldToReply(client *c, robj *o, robj *field) {
+static void addHashFieldToReply(redisClient *c, robj *o, robj *field) {
     int ret;
 
     if (o == NULL) {
@@ -613,7 +591,7 @@ static void addHashFieldToReply(client *c, robj *o, robj *field) {
         return;
     }
 
-    if (o->encoding == OBJ_ENCODING_ZIPLIST) {
+    if (o->encoding == REDIS_ENCODING_ZIPLIST) {
         unsigned char *vstr = NULL;
         unsigned int vlen = UINT_MAX;
         long long vll = LLONG_MAX;
@@ -629,7 +607,7 @@ static void addHashFieldToReply(client *c, robj *o, robj *field) {
             }
         }
 
-    } else if (o->encoding == OBJ_ENCODING_HT) {
+    } else if (o->encoding == REDIS_ENCODING_HT) {
         robj *value;
 
         ret = hashTypeGetFromHashTable(o, field, &value);
@@ -640,27 +618,27 @@ static void addHashFieldToReply(client *c, robj *o, robj *field) {
         }
 
     } else {
-        serverPanic("Unknown hash encoding");
+        redisPanic("Unknown hash encoding");
     }
 }
 
-void hgetCommand(client *c) {
+void hgetCommand(redisClient *c) {
     robj *o;
 
     if ((o = lookupKeyReadOrReply(c,c->argv[1],shared.nullbulk)) == NULL ||
-        checkType(c,o,OBJ_HASH)) return;
+        checkType(c,o,REDIS_HASH)) return;
 
     addHashFieldToReply(c, o, c->argv[2]);
 }
 
-void hmgetCommand(client *c) {
+void hmgetCommand(redisClient *c) {
     robj *o;
     int i;
 
     /* Don't abort when the key cannot be found. Non-existing keys are empty
      * hashes, where HMGET should respond with a series of null bulks. */
     o = lookupKeyRead(c->db, c->argv[1]);
-    if (o != NULL && o->type != OBJ_HASH) {
+    if (o != NULL && o->type != REDIS_HASH) {
         addReply(c, shared.wrongtypeerr);
         return;
     }
@@ -671,12 +649,12 @@ void hmgetCommand(client *c) {
     }
 }
 
-void hdelCommand(client *c) {
+void hdelCommand(redisClient *c) {
     robj *o;
     int j, deleted = 0, keyremoved = 0;
 
     if ((o = lookupKeyWriteOrReply(c,c->argv[1],shared.czero)) == NULL ||
-        checkType(c,o,OBJ_HASH)) return;
+        checkType(c,o,REDIS_HASH)) return;
 
     for (j = 2; j < c->argc; j++) {
         if (hashTypeDelete(o,c->argv[j])) {
@@ -690,34 +668,25 @@ void hdelCommand(client *c) {
     }
     if (deleted) {
         signalModifiedKey(c->db,c->argv[1]);
-        notifyKeyspaceEvent(NOTIFY_HASH,"hdel",c->argv[1],c->db->id);
+        notifyKeyspaceEvent(REDIS_NOTIFY_HASH,"hdel",c->argv[1],c->db->id);
         if (keyremoved)
-            notifyKeyspaceEvent(NOTIFY_GENERIC,"del",c->argv[1],
+            notifyKeyspaceEvent(REDIS_NOTIFY_GENERIC,"del",c->argv[1],
                                 c->db->id);
         server.dirty += deleted;
     }
     addReplyLongLong(c,deleted);
 }
 
-void hlenCommand(client *c) {
+void hlenCommand(redisClient *c) {
     robj *o;
-
     if ((o = lookupKeyReadOrReply(c,c->argv[1],shared.czero)) == NULL ||
-        checkType(c,o,OBJ_HASH)) return;
+        checkType(c,o,REDIS_HASH)) return;
 
     addReplyLongLong(c,hashTypeLength(o));
 }
 
-void hstrlenCommand(client *c) {
-    robj *o;
-
-    if ((o = lookupKeyReadOrReply(c,c->argv[1],shared.czero)) == NULL ||
-        checkType(c,o,OBJ_HASH)) return;
-    addReplyLongLong(c,hashTypeGetValueLength(o,c->argv[2]));
-}
-
-static void addHashIteratorCursorToReply(client *c, hashTypeIterator *hi, int what) {
-    if (hi->encoding == OBJ_ENCODING_ZIPLIST) {
+static void addHashIteratorCursorToReply(redisClient *c, hashTypeIterator *hi, int what) {
+    if (hi->encoding == REDIS_ENCODING_ZIPLIST) {
         unsigned char *vstr = NULL;
         unsigned int vlen = UINT_MAX;
         long long vll = LLONG_MAX;
@@ -729,74 +698,74 @@ static void addHashIteratorCursorToReply(client *c, hashTypeIterator *hi, int wh
             addReplyBulkLongLong(c, vll);
         }
 
-    } else if (hi->encoding == OBJ_ENCODING_HT) {
+    } else if (hi->encoding == REDIS_ENCODING_HT) {
         robj *value;
 
         hashTypeCurrentFromHashTable(hi, what, &value);
         addReplyBulk(c, value);
 
     } else {
-        serverPanic("Unknown hash encoding");
+        redisPanic("Unknown hash encoding");
     }
 }
 
-void genericHgetallCommand(client *c, int flags) {
+void genericHgetallCommand(redisClient *c, int flags) {
     robj *o;
     hashTypeIterator *hi;
     int multiplier = 0;
     int length, count = 0;
 
     if ((o = lookupKeyReadOrReply(c,c->argv[1],shared.emptymultibulk)) == NULL
-        || checkType(c,o,OBJ_HASH)) return;
+        || checkType(c,o,REDIS_HASH)) return;
 
-    if (flags & OBJ_HASH_KEY) multiplier++;
-    if (flags & OBJ_HASH_VALUE) multiplier++;
+    if (flags & REDIS_HASH_KEY) multiplier++;
+    if (flags & REDIS_HASH_VALUE) multiplier++;
 
     length = hashTypeLength(o) * multiplier;
     addReplyMultiBulkLen(c, length);
 
     hi = hashTypeInitIterator(o);
-    while (hashTypeNext(hi) != C_ERR) {
-        if (flags & OBJ_HASH_KEY) {
-            addHashIteratorCursorToReply(c, hi, OBJ_HASH_KEY);
+    while (hashTypeNext(hi) != REDIS_ERR) {
+        if (flags & REDIS_HASH_KEY) {
+            addHashIteratorCursorToReply(c, hi, REDIS_HASH_KEY);
             count++;
         }
-        if (flags & OBJ_HASH_VALUE) {
-            addHashIteratorCursorToReply(c, hi, OBJ_HASH_VALUE);
+        if (flags & REDIS_HASH_VALUE) {
+            addHashIteratorCursorToReply(c, hi, REDIS_HASH_VALUE);
             count++;
         }
     }
 
     hashTypeReleaseIterator(hi);
-    serverAssert(count == length);
+    redisAssert(count == length);
 }
 
-void hkeysCommand(client *c) {
-    genericHgetallCommand(c,OBJ_HASH_KEY);
+void hkeysCommand(redisClient *c) {
+    genericHgetallCommand(c,REDIS_HASH_KEY);
 }
 
-void hvalsCommand(client *c) {
-    genericHgetallCommand(c,OBJ_HASH_VALUE);
+void hvalsCommand(redisClient *c) {
+    genericHgetallCommand(c,REDIS_HASH_VALUE);
 }
 
-void hgetallCommand(client *c) {
-    genericHgetallCommand(c,OBJ_HASH_KEY|OBJ_HASH_VALUE);
+void hgetallCommand(redisClient *c) {
+    genericHgetallCommand(c,REDIS_HASH_KEY|REDIS_HASH_VALUE);
 }
 
-void hexistsCommand(client *c) {
+void hexistsCommand(redisClient *c) {
     robj *o;
     if ((o = lookupKeyReadOrReply(c,c->argv[1],shared.czero)) == NULL ||
-        checkType(c,o,OBJ_HASH)) return;
+        checkType(c,o,REDIS_HASH)) return;
 
     addReply(c, hashTypeExists(o,c->argv[2]) ? shared.cone : shared.czero);
 }
 
-void hscanCommand(client *c) {
+void hscanCommand(redisClient *c) {
     robj *o;
     unsigned long cursor;
 
-    if (parseScanCursorOrReply(c,c->argv[2],&cursor) == C_ERR) return;
+    if (parseScanCursorOrReply(c,c->argv[2],&cursor) == REDIS_ERR) return;
     if ((o = lookupKeyReadOrReply(c,c->argv[1],shared.emptyscan)) == NULL ||
-        checkType(c,o,OBJ_HASH)) return;
+        checkType(c,o,REDIS_HASH)) return;
     scanGenericCommand(c,o,cursor);
 }

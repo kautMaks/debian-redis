@@ -16,10 +16,8 @@ set ::all_tests {
     unit/dump
     unit/auth
     unit/protocol
-    unit/keyspace
+    unit/basic
     unit/scan
-    unit/type/string
-    unit/type/incr
     unit/type/list
     unit/type/list-2
     unit/type/list-3
@@ -464,11 +462,8 @@ proc attach_to_replication_stream {} {
     flush $s
 
     # Get the count
-    while 1 {
-        set count [gets $s]
-        set prefix [string range $count 0 0]
-        if {$prefix ne {}} break; # Newlines are allowed as PINGs.
-    }
+    set count [gets $s]
+    set prefix [string range $count 0 0]
     if {$prefix ne {$}} {
         error "attach_to_replication_stream error. Received '$count' as count."
     }

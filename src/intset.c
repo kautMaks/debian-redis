@@ -281,46 +281,44 @@ size_t intsetBlobLen(intset *is) {
     return sizeof(intset)+intrev32ifbe(is->length)*intrev32ifbe(is->encoding);
 }
 
-#ifdef REDIS_TEST
+#ifdef INTSET_TEST_MAIN
 #include <sys/time.h>
-#include <time.h>
 
-#if 0
-static void intsetRepr(intset *is) {
-    for (uint32_t i = 0; i < intrev32ifbe(is->length); i++) {
+void intsetRepr(intset *is) {
+    int i;
+    for (i = 0; i < intrev32ifbe(is->length); i++) {
         printf("%lld\n", (uint64_t)_intsetGet(is,i));
     }
     printf("\n");
 }
 
-static void error(char *err) {
+void error(char *err) {
     printf("%s\n", err);
     exit(1);
 }
-#endif
 
-static void ok(void) {
+void ok(void) {
     printf("OK\n");
 }
 
-static long long usec(void) {
+long long usec(void) {
     struct timeval tv;
     gettimeofday(&tv,NULL);
     return (((long long)tv.tv_sec)*1000000)+tv.tv_usec;
 }
 
 #define assert(_e) ((_e)?(void)0:(_assert(#_e,__FILE__,__LINE__),exit(1)))
-static void _assert(char *estr, char *file, int line) {
+void _assert(char *estr, char *file, int line) {
     printf("\n\n=== ASSERTION FAILED ===\n");
     printf("==> %s:%d '%s' is not true\n",file,line,estr);
 }
 
-static intset *createSet(int bits, int size) {
+intset *createSet(int bits, int size) {
     uint64_t mask = (1<<bits)-1;
-    uint64_t value;
+    uint64_t i, value;
     intset *is = intsetNew();
 
-    for (int i = 0; i < size; i++) {
+    for (i = 0; i < size; i++) {
         if (bits > 32) {
             value = (rand()*rand()) & mask;
         } else {
@@ -331,8 +329,10 @@ static intset *createSet(int bits, int size) {
     return is;
 }
 
-static void checkConsistency(intset *is) {
-    for (uint32_t i = 0; i < (intrev32ifbe(is->length)-1); i++) {
+void checkConsistency(intset *is) {
+    int i;
+
+    for (i = 0; i < (intrev32ifbe(is->length)-1); i++) {
         uint32_t encoding = intrev32ifbe(is->encoding);
 
         if (encoding == INTSET_ENC_INT16) {
@@ -348,15 +348,11 @@ static void checkConsistency(intset *is) {
     }
 }
 
-#define UNUSED(x) (void)(x)
-int intsetTest(int argc, char **argv) {
+int main(int argc, char **argv) {
     uint8_t success;
     int i;
     intset *is;
-    srand(time(NULL));
-
-    UNUSED(argc);
-    UNUSED(argv);
+    sranddev();
 
     printf("Value encodings: "); {
         assert(_intsetValueEncoding(-32768) == INTSET_ENC_INT16);
@@ -367,10 +363,8 @@ int intsetTest(int argc, char **argv) {
         assert(_intsetValueEncoding(+2147483647) == INTSET_ENC_INT32);
         assert(_intsetValueEncoding(-2147483649) == INTSET_ENC_INT64);
         assert(_intsetValueEncoding(+2147483648) == INTSET_ENC_INT64);
-        assert(_intsetValueEncoding(-9223372036854775808ull) ==
-                    INTSET_ENC_INT64);
-        assert(_intsetValueEncoding(+9223372036854775807ull) ==
-                    INTSET_ENC_INT64);
+        assert(_intsetValueEncoding(-9223372036854775808ull) == INTSET_ENC_INT64);
+        assert(_intsetValueEncoding(+9223372036854775807ull) == INTSET_ENC_INT64);
         ok();
     }
 
@@ -384,7 +378,7 @@ int intsetTest(int argc, char **argv) {
     }
 
     printf("Large number of random adds: "); {
-        uint32_t inserts = 0;
+        int inserts = 0;
         is = intsetNew();
         for (i = 0; i < 1024; i++) {
             is = intsetAdd(is,rand()%0x800,&success);
@@ -467,8 +461,7 @@ int intsetTest(int argc, char **argv) {
 
         start = usec();
         for (i = 0; i < num; i++) intsetSearch(is,rand() % ((1<<bits)-1),NULL);
-        printf("%ld lookups, %ld element set, %lldusec\n",
-               num,size,usec()-start);
+        printf("%ld lookups, %ld element set, %lldusec\n",num,size,usec()-start);
     }
 
     printf("Stress add+delete: "); {
@@ -486,7 +479,5 @@ int intsetTest(int argc, char **argv) {
         checkConsistency(is);
         ok();
     }
-
-    return 0;
 }
 #endif

@@ -28,7 +28,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "server.h"
+#include "redis.h"
 
 /* -----------------------------------------------------------------------------
  * Helpers and low level bit functions.
@@ -37,22 +37,22 @@
 /* This helper function used by GETBIT / SETBIT parses the bit offset argument
  * making sure an error is returned if it is negative or if it overflows
  * Redis 512 MB limit for the string value. */
-static int getBitOffsetFromArgument(client *c, robj *o, size_t *offset) {
+static int getBitOffsetFromArgument(redisClient *c, robj *o, size_t *offset) {
     long long loffset;
     char *err = "bit offset is not an integer or out of range";
 
-    if (getLongLongFromObjectOrReply(c,o,&loffset,err) != C_OK)
-        return C_ERR;
+    if (getLongLongFromObjectOrReply(c,o,&loffset,err) != REDIS_OK)
+        return REDIS_ERR;
 
     /* Limit offset to 512MB in bytes */
     if ((loffset < 0) || ((unsigned long long)loffset >> 3) >= (512*1024*1024))
     {
         addReplyError(c,err);
-        return C_ERR;
+        return REDIS_ERR;
     }
 
     *offset = (size_t)loffset;
-    return C_OK;
+    return REDIS_OK;
 }
 
 /* Count number of bits set in the binary array pointed by 's' and long
@@ -195,7 +195,7 @@ long redisBitpos(void *s, unsigned long count, int bit) {
 
     /* If we reached this point, there is a bug in the algorithm, since
      * the case of no match is handled as a special case before. */
-    serverPanic("End of redisBitpos() reached.");
+    redisPanic("End of redisBitpos() reached.");
     return 0; /* Just to avoid warnings. */
 }
 
@@ -209,7 +209,7 @@ long redisBitpos(void *s, unsigned long count, int bit) {
 #define BITOP_NOT   3
 
 /* SETBIT key offset bitvalue */
-void setbitCommand(client *c) {
+void setbitCommand(redisClient *c) {
     robj *o;
     char *err = "bit is not an integer or out of range";
     size_t bitoffset;
@@ -217,10 +217,10 @@ void setbitCommand(client *c) {
     int byteval, bitval;
     long on;
 
-    if (getBitOffsetFromArgument(c,c->argv[2],&bitoffset) != C_OK)
+    if (getBitOffsetFromArgument(c,c->argv[2],&bitoffset) != REDIS_OK)
         return;
 
-    if (getLongFromObjectOrReply(c,c->argv[3],&on,err) != C_OK)
+    if (getLongFromObjectOrReply(c,c->argv[3],&on,err) != REDIS_OK)
         return;
 
     /* Bits can only be set or cleared... */
@@ -229,16 +229,18 @@ void setbitCommand(client *c) {
         return;
     }
 
-    byte = bitoffset >> 3;
     o = lookupKeyWrite(c->db,c->argv[1]);
     if (o == NULL) {
-        o = createObject(OBJ_STRING,sdsnewlen(NULL, byte+1));
+        o = createObject(REDIS_STRING,sdsempty());
         dbAdd(c->db,c->argv[1],o);
     } else {
-        if (checkType(c,o,OBJ_STRING)) return;
+        if (checkType(c,o,REDIS_STRING)) return;
         o = dbUnshareStringValue(c->db,c->argv[1],o);
-        o->ptr = sdsgrowzero(o->ptr,byte+1);
     }
+
+    /* Grow sds value to the right length if necessary */
+    byte = bitoffset >> 3;
+    o->ptr = sdsgrowzero(o->ptr,byte+1);
 
     /* Get current values */
     byteval = ((uint8_t*)o->ptr)[byte];
@@ -250,24 +252,24 @@ void setbitCommand(client *c) {
     byteval |= ((on & 0x1) << bit);
     ((uint8_t*)o->ptr)[byte] = byteval;
     signalModifiedKey(c->db,c->argv[1]);
-    notifyKeyspaceEvent(NOTIFY_STRING,"setbit",c->argv[1],c->db->id);
+    notifyKeyspaceEvent(REDIS_NOTIFY_STRING,"setbit",c->argv[1],c->db->id);
     server.dirty++;
     addReply(c, bitval ? shared.cone : shared.czero);
 }
 
 /* GETBIT key offset */
-void getbitCommand(client *c) {
+void getbitCommand(redisClient *c) {
     robj *o;
     char llbuf[32];
     size_t bitoffset;
     size_t byte, bit;
     size_t bitval = 0;
 
-    if (getBitOffsetFromArgument(c,c->argv[2],&bitoffset) != C_OK)
+    if (getBitOffsetFromArgument(c,c->argv[2],&bitoffset) != REDIS_OK)
         return;
 
     if ((o = lookupKeyReadOrReply(c,c->argv[1],shared.czero)) == NULL ||
-        checkType(c,o,OBJ_STRING)) return;
+        checkType(c,o,REDIS_STRING)) return;
 
     byte = bitoffset >> 3;
     bit = 7 - (bitoffset & 0x7);
@@ -283,7 +285,7 @@ void getbitCommand(client *c) {
 }
 
 /* BITOP op_name target_key src_key1 src_key2 src_key3 ... src_keyN */
-void bitopCommand(client *c) {
+void bitopCommand(redisClient *c) {
     char *opname = c->argv[1]->ptr;
     robj *o, *targetkey = c->argv[2];
     unsigned long op, j, numkeys;
@@ -330,7 +332,7 @@ void bitopCommand(client *c) {
             continue;
         }
         /* Return an error if one of the keys is not a string. */
-        if (checkType(c,o,OBJ_STRING)) {
+        if (checkType(c,o,REDIS_STRING)) {
             unsigned long i;
             for (i = 0; i < j; i++) {
                 if (objects[i])
@@ -444,20 +446,20 @@ void bitopCommand(client *c) {
 
     /* Store the computed value into the target key */
     if (maxlen) {
-        o = createObject(OBJ_STRING,res);
+        o = createObject(REDIS_STRING,res);
         setKey(c->db,targetkey,o);
-        notifyKeyspaceEvent(NOTIFY_STRING,"set",targetkey,c->db->id);
+        notifyKeyspaceEvent(REDIS_NOTIFY_STRING,"set",targetkey,c->db->id);
         decrRefCount(o);
     } else if (dbDelete(c->db,targetkey)) {
         signalModifiedKey(c->db,targetkey);
-        notifyKeyspaceEvent(NOTIFY_GENERIC,"del",targetkey,c->db->id);
+        notifyKeyspaceEvent(REDIS_NOTIFY_GENERIC,"del",targetkey,c->db->id);
     }
     server.dirty++;
     addReplyLongLong(c,maxlen); /* Return the output string length in bytes. */
 }
 
 /* BITCOUNT key [start end] */
-void bitcountCommand(client *c) {
+void bitcountCommand(redisClient *c) {
     robj *o;
     long start, end, strlen;
     unsigned char *p;
@@ -465,11 +467,11 @@ void bitcountCommand(client *c) {
 
     /* Lookup, check for type, and return 0 for non existing keys. */
     if ((o = lookupKeyReadOrReply(c,c->argv[1],shared.czero)) == NULL ||
-        checkType(c,o,OBJ_STRING)) return;
+        checkType(c,o,REDIS_STRING)) return;
 
     /* Set the 'p' pointer to the string, that can be just a stack allocated
      * array if our string was integer encoded. */
-    if (o->encoding == OBJ_ENCODING_INT) {
+    if (o->encoding == REDIS_ENCODING_INT) {
         p = (unsigned char*) llbuf;
         strlen = ll2string(llbuf,sizeof(llbuf),(long)o->ptr);
     } else {
@@ -479,9 +481,9 @@ void bitcountCommand(client *c) {
 
     /* Parse start/end range if any. */
     if (c->argc == 4) {
-        if (getLongFromObjectOrReply(c,c->argv[2],&start,NULL) != C_OK)
+        if (getLongFromObjectOrReply(c,c->argv[2],&start,NULL) != REDIS_OK)
             return;
-        if (getLongFromObjectOrReply(c,c->argv[3],&end,NULL) != C_OK)
+        if (getLongFromObjectOrReply(c,c->argv[3],&end,NULL) != REDIS_OK)
             return;
         /* Convert negative indexes */
         if (start < 0) start = strlen+start;
@@ -511,7 +513,7 @@ void bitcountCommand(client *c) {
 }
 
 /* BITPOS key bit [start [end]] */
-void bitposCommand(client *c) {
+void bitposCommand(redisClient *c) {
     robj *o;
     long bit, start, end, strlen;
     unsigned char *p;
@@ -520,7 +522,7 @@ void bitposCommand(client *c) {
 
     /* Parse the bit argument to understand what we are looking for, set
      * or clear bits. */
-    if (getLongFromObjectOrReply(c,c->argv[2],&bit,NULL) != C_OK)
+    if (getLongFromObjectOrReply(c,c->argv[2],&bit,NULL) != REDIS_OK)
         return;
     if (bit != 0 && bit != 1) {
         addReplyError(c, "The bit argument must be 1 or 0.");
@@ -534,11 +536,11 @@ void bitposCommand(client *c) {
         addReplyLongLong(c, bit ? -1 : 0);
         return;
     }
-    if (checkType(c,o,OBJ_STRING)) return;
+    if (checkType(c,o,REDIS_STRING)) return;
 
     /* Set the 'p' pointer to the string, that can be just a stack allocated
      * array if our string was integer encoded. */
-    if (o->encoding == OBJ_ENCODING_INT) {
+    if (o->encoding == REDIS_ENCODING_INT) {
         p = (unsigned char*) llbuf;
         strlen = ll2string(llbuf,sizeof(llbuf),(long)o->ptr);
     } else {
@@ -548,10 +550,10 @@ void bitposCommand(client *c) {
 
     /* Parse start/end range if any. */
     if (c->argc == 4 || c->argc == 5) {
-        if (getLongFromObjectOrReply(c,c->argv[3],&start,NULL) != C_OK)
+        if (getLongFromObjectOrReply(c,c->argv[3],&start,NULL) != REDIS_OK)
             return;
         if (c->argc == 5) {
-            if (getLongFromObjectOrReply(c,c->argv[4],&end,NULL) != C_OK)
+            if (getLongFromObjectOrReply(c,c->argv[4],&end,NULL) != REDIS_OK)
                 return;
             end_given = 1;
         } else {

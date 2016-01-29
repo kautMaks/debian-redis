@@ -370,8 +370,8 @@ size_t zipmapBlobLen(unsigned char *zm) {
     return totlen;
 }
 
-#ifdef REDIS_TEST
-static void zipmapRepr(unsigned char *p) {
+#ifdef ZIPMAP_TEST_MAIN
+void zipmapRepr(unsigned char *p) {
     unsigned int l;
 
     printf("{status %u}",*p++);
@@ -404,12 +404,8 @@ static void zipmapRepr(unsigned char *p) {
     printf("\n");
 }
 
-#define UNUSED(x) (void)(x)
-int zipmapTest(int argc, char *argv[]) {
+int main(void) {
     unsigned char *zm;
-
-    UNUSED(argc);
-    UNUSED(argv);
 
     zm = zipmapNew();
 

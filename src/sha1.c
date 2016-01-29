@@ -197,18 +197,15 @@ void SHA1Final(unsigned char digest[20], SHA1_CTX* context)
 }
 /* ================ end of sha1.c ================ */
 
-#ifdef REDIS_TEST
+#if 0
 #define BUFSIZE 4096
 
-#define UNUSED(x) (void)(x)
-int sha1Test(int argc, char **argv)
+int
+main(int argc, char **argv)
 {
     SHA1_CTX ctx;
     unsigned char hash[20], buf[BUFSIZE];
     int i;
-
-    UNUSED(argc);
-    UNUSED(argv);
 
     for(i=0;i<BUFSIZE;i++)
         buf[i] = i;
@@ -224,4 +221,6 @@ int sha1Test(int argc, char **argv)
     printf("\n");
     return 0;
 }
+
 #endif
+

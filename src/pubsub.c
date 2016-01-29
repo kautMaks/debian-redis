@@ -27,7 +27,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "server.h"
+#include "redis.h"
 
 /*-----------------------------------------------------------------------------
  * Pubsub low level API
@@ -48,14 +48,14 @@ int listMatchPubsubPattern(void *a, void *b) {
 }
 
 /* Return the number of channels + patterns a client is subscribed to. */
-int clientSubscriptionsCount(client *c) {
+int clientSubscriptionsCount(redisClient *c) {
     return dictSize(c->pubsub_channels)+
            listLength(c->pubsub_patterns);
 }
 
 /* Subscribe a client to a channel. Returns 1 if the operation succeeded, or
  * 0 if the client was already subscribed to that channel. */
-int pubsubSubscribeChannel(client *c, robj *channel) {
+int pubsubSubscribeChannel(redisClient *c, robj *channel) {
     dictEntry *de;
     list *clients = NULL;
     int retval = 0;
@@ -85,7 +85,7 @@ int pubsubSubscribeChannel(client *c, robj *channel) {
 
 /* Unsubscribe a client from a channel. Returns 1 if the operation succeeded, or
  * 0 if the client was not subscribed to the specified channel. */
-int pubsubUnsubscribeChannel(client *c, robj *channel, int notify) {
+int pubsubUnsubscribeChannel(redisClient *c, robj *channel, int notify) {
     dictEntry *de;
     list *clients;
     listNode *ln;
@@ -98,10 +98,10 @@ int pubsubUnsubscribeChannel(client *c, robj *channel, int notify) {
         retval = 1;
         /* Remove the client from the channel -> clients list hash table */
         de = dictFind(server.pubsub_channels,channel);
-        serverAssertWithInfo(c,NULL,de != NULL);
+        redisAssertWithInfo(c,NULL,de != NULL);
         clients = dictGetVal(de);
         ln = listSearchKey(clients,c);
-        serverAssertWithInfo(c,NULL,ln != NULL);
+        redisAssertWithInfo(c,NULL,ln != NULL);
         listDelNode(clients,ln);
         if (listLength(clients) == 0) {
             /* Free the list and associated hash entry at all if this was
@@ -124,7 +124,7 @@ int pubsubUnsubscribeChannel(client *c, robj *channel, int notify) {
 }
 
 /* Subscribe a client to a pattern. Returns 1 if the operation succeeded, or 0 if the client was already subscribed to that pattern. */
-int pubsubSubscribePattern(client *c, robj *pattern) {
+int pubsubSubscribePattern(redisClient *c, robj *pattern) {
     int retval = 0;
 
     if (listSearchKey(c->pubsub_patterns,pattern) == NULL) {
@@ -147,7 +147,7 @@ int pubsubSubscribePattern(client *c, robj *pattern) {
 
 /* Unsubscribe a client from a channel. Returns 1 if the operation succeeded, or
  * 0 if the client was not subscribed to the specified channel. */
-int pubsubUnsubscribePattern(client *c, robj *pattern, int notify) {
+int pubsubUnsubscribePattern(redisClient *c, robj *pattern, int notify) {
     listNode *ln;
     pubsubPattern pat;
     int retval = 0;
@@ -175,7 +175,7 @@ int pubsubUnsubscribePattern(client *c, robj *pattern, int notify) {
 
 /* Unsubscribe from all the channels. Return the number of channels the
  * client was subscribed to. */
-int pubsubUnsubscribeAllChannels(client *c, int notify) {
+int pubsubUnsubscribeAllChannels(redisClient *c, int notify) {
     dictIterator *di = dictGetSafeIterator(c->pubsub_channels);
     dictEntry *de;
     int count = 0;
@@ -199,7 +199,7 @@ int pubsubUnsubscribeAllChannels(client *c, int notify) {
 
 /* Unsubscribe from all the patterns. Return the number of patterns the
  * client was subscribed from. */
-int pubsubUnsubscribeAllPatterns(client *c, int notify) {
+int pubsubUnsubscribeAllPatterns(redisClient *c, int notify) {
     listNode *ln;
     listIter li;
     int count = 0;
@@ -237,7 +237,7 @@ int pubsubPublishMessage(robj *channel, robj *message) {
 
         listRewind(list,&li);
         while ((ln = listNext(&li)) != NULL) {
-            client *c = ln->value;
+            redisClient *c = ln->value;
 
             addReply(c,shared.mbulkhdr[3]);
             addReply(c,shared.messagebulk);
@@ -274,15 +274,15 @@ int pubsubPublishMessage(robj *channel, robj *message) {
  * Pubsub commands implementation
  *----------------------------------------------------------------------------*/
 
-void subscribeCommand(client *c) {
+void subscribeCommand(redisClient *c) {
     int j;
 
     for (j = 1; j < c->argc; j++)
         pubsubSubscribeChannel(c,c->argv[j]);
-    c->flags |= CLIENT_PUBSUB;
+    c->flags |= REDIS_PUBSUB;
 }
 
-void unsubscribeCommand(client *c) {
+void unsubscribeCommand(redisClient *c) {
     if (c->argc == 1) {
         pubsubUnsubscribeAllChannels(c,1);
     } else {
@@ -291,18 +291,18 @@ void unsubscribeCommand(client *c) {
         for (j = 1; j < c->argc; j++)
             pubsubUnsubscribeChannel(c,c->argv[j],1);
     }
-    if (clientSubscriptionsCount(c) == 0) c->flags &= ~CLIENT_PUBSUB;
+    if (clientSubscriptionsCount(c) == 0) c->flags &= ~REDIS_PUBSUB;
 }
 
-void psubscribeCommand(client *c) {
+void psubscribeCommand(redisClient *c) {
     int j;
 
     for (j = 1; j < c->argc; j++)
         pubsubSubscribePattern(c,c->argv[j]);
-    c->flags |= CLIENT_PUBSUB;
+    c->flags |= REDIS_PUBSUB;
 }
 
-void punsubscribeCommand(client *c) {
+void punsubscribeCommand(redisClient *c) {
     if (c->argc == 1) {
         pubsubUnsubscribeAllPatterns(c,1);
     } else {
@@ -311,20 +311,20 @@ void punsubscribeCommand(client *c) {
         for (j = 1; j < c->argc; j++)
             pubsubUnsubscribePattern(c,c->argv[j],1);
     }
-    if (clientSubscriptionsCount(c) == 0) c->flags &= ~CLIENT_PUBSUB;
+    if (clientSubscriptionsCount(c) == 0) c->flags &= ~REDIS_PUBSUB;
 }
 
-void publishCommand(client *c) {
+void publishCommand(redisClient *c) {
     int receivers = pubsubPublishMessage(c->argv[1],c->argv[2]);
     if (server.cluster_enabled)
         clusterPropagatePublish(c->argv[1],c->argv[2]);
     else
-        forceCommandPropagation(c,PROPAGATE_REPL);
+        forceCommandPropagation(c,REDIS_PROPAGATE_REPL);
     addReplyLongLong(c,receivers);
 }
 
 /* PUBSUB command for Pub/Sub introspection. */
-void pubsubCommand(client *c) {
+void pubsubCommand(redisClient *c) {
     if (!strcasecmp(c->argv[1]->ptr,"channels") &&
         (c->argc == 2 || c->argc ==3))
     {

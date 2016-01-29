@@ -19,12 +19,9 @@ proc assert_match {pattern value} {
     }
 }
 
-proc assert_equal {expected value {detail ""}} {
+proc assert_equal {expected value} {
     if {$expected ne $value} {
-        if {$detail ne ""} {
-            set detail " (detail: $detail)"
-        }
-        error "assertion:Expected '$value' to be equal to '$expected'$detail"
+        error "assertion:Expected '$value' to be equal to '$expected'"
     }
 }
 
