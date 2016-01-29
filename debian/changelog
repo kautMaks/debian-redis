@@ -1,10 +1,10 @@
-redis (2:3.0.7-1) UNRELEASED; urgency=medium
+redis (2:3.0.7-1) unstable; urgency=medium
 
   * New upstream release.
   * Actually drop unused 05-reproducible-build.diff file.
   * Move to https Vcs-Git URI.
 
- -- Chris Lamb <lamby@debian.org>  Fri, 29 Jan 2016 14:56:29 +0100
+ -- Chris Lamb <lamby@debian.org>  Fri, 29 Jan 2016 14:56:43 +0100
 
 redis (2:3.0.6-2) unstable; urgency=medium
 
