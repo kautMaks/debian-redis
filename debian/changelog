@@ -1,3 +1,10 @@
+redis (2:3.0.7-2) UNRELEASED; urgency=medium
+
+  * Correct SOURCE_DATE_EPOCH patch to invert conditional. Thanks to Reiner
+    Herrmann <reiner@reiner-h.de>.
+
+ -- Chris Lamb <lamby@debian.org>  Tue, 02 Feb 2016 10:51:16 +0100
+
 redis (2:3.0.7-1) unstable; urgency=medium
 
   * New upstream release.
