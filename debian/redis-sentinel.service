@@ -19,6 +19,7 @@ ExecStop=/bin/kill -s TERM $MAINPID
 ExecStopPost=-/bin/run-parts --verbose /etc/redis/redis-sentinel.post-down.d
 
 PrivateTmp=yes
+LimitNOFILE=
 PrivateDevices=yes
 ProtectHome=yes
 ReadOnlyDirectories=/
