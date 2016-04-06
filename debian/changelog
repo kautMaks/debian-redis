@@ -1,11 +1,11 @@
-redis (2:3.0.7-3) UNRELEASED; urgency=medium
+redis (2:3.0.7-3) unstable; urgency=medium
 
   * Update .travis.yml.
   * Update redis-benchmark manpage. Thanks to Joe Doherty (docapotamus).
   * Add LimitNOFILE to allow a higher number of open file descriptors
     <https://github.com/lamby/pkg-redis/issues/8>. Thanks to @alexber220.
 
- -- Chris Lamb <lamby@debian.org>  Tue, 02 Feb 2016 21:45:34 +0100
+ -- Chris Lamb <lamby@debian.org>  Wed, 06 Apr 2016 15:23:06 +0100
 
 redis (2:3.0.7-2) unstable; urgency=medium
 
