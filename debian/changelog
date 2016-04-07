@@ -1,8 +1,8 @@
-redis (2:3.0.7-4) UNRELEASED; urgency=medium
+redis (2:3.0.7-4) unstable; urgency=medium
 
   * Actually specify a value for LimitNOFILE.
 
- -- Chris Lamb <lamby@debian.org>  Thu, 07 Apr 2016 11:08:21 +0100
+ -- Chris Lamb <lamby@debian.org>  Thu, 07 Apr 2016 11:08:34 +0100
 
 redis (2:3.0.7-3) unstable; urgency=medium
 
