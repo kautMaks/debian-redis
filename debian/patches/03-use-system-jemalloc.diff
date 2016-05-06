@@ -56,3 +56,26 @@ index 4de2cff..3ddb517 100644
  #else
  #error "Newer version of jemalloc required"
  #endif
+diff --git a/src/debug.c b/src/debug.c
+index 03a0125..74e30c2 100644
+--- a/src/debug.c
++++ b/src/debug.c
+@@ -524,15 +524,15 @@ void debugCommand(client *c) {
+ #if defined(USE_JEMALLOC)
+         if (!strcasecmp(c->argv[2]->ptr, "info")) {
+             sds info = sdsempty();
+-            je_malloc_stats_print(inputCatSds, &info, NULL);
++            malloc_stats_print(inputCatSds, &info, NULL);
+             addReplyBulkSds(c, info);
+         } else if (!strcasecmp(c->argv[2]->ptr, "purge")) {
+             char tmp[32];
+             unsigned narenas = 0;
+             size_t sz = sizeof(unsigned);
+-            if (!je_mallctl("arenas.narenas", &narenas, &sz, NULL, 0)) {
++            if (!mallctl("arenas.narenas", &narenas, &sz, NULL, 0)) {
+                 sprintf(tmp, "arena.%d.purge", narenas);
+-                if (!je_mallctl(tmp, NULL, 0, NULL, 0)) {
++                if (!mallctl(tmp, NULL, 0, NULL, 0)) {
+                     addReply(c, shared.ok);
+                     return;
+                 }
