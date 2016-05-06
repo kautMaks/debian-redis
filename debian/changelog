@@ -3,6 +3,7 @@ redis (2:3.2.0-1) UNRELEASED; urgency=medium
   * New upstream release.
   * Update 03-use-system-jemalloc.diff.
   * Install redis-check-rdb (was: redis-check-dump).
+  * Bump Standards-Version to 3.9.8.
 
  -- Chris Lamb <lamby@debian.org>  Fri, 06 May 2016 20:52:29 +0100
 
