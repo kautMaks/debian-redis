@@ -39,6 +39,7 @@
 #include <sys/wait.h>
 #include <arpa/inet.h>
 #include <sys/stat.h>
+#include <sys/param.h>
 
 #define RDB_LOAD_NONE   0
 #define RDB_LOAD_ENC    (1<<0)
@@ -386,7 +387,8 @@ int rdbSaveStringObject(rio *rdb, robj *obj) {
  *               efficient. When this flag is passed the function
  *               no longer guarantees that obj->ptr is an SDS string.
  * RDB_LOAD_PLAIN: Return a plain string allocated with zmalloc()
- *                 instead of a Redis object.
+ *                 instead of a Redis object with an sds in it.
+ * RDB_LOAD_SDS: Return an SDS string instead of a Redis object.
  */
 void *rdbGenericLoadStringObject(rio *rdb, int flags) {
     int encode = flags & RDB_LOAD_ENC;
@@ -766,7 +768,7 @@ int rdbSaveRio(rio *rdb, int *error) {
         db_size = (dictSize(db->dict) <= UINT32_MAX) ?
                                 dictSize(db->dict) :
                                 UINT32_MAX;
-        expires_size = (dictSize(db->dict) <= UINT32_MAX) ?
+        expires_size = (dictSize(db->expires) <= UINT32_MAX) ?
                                 dictSize(db->expires) :
                                 UINT32_MAX;
         if (rdbSaveType(rdb,RDB_OPCODE_RESIZEDB) == -1) goto werr;
@@ -832,6 +834,7 @@ werr: /* Write error. */
 /* Save the DB on disk. Return C_ERR on error, C_OK on success. */
 int rdbSave(char *filename) {
     char tmpfile[256];
+    char cwd[MAXPATHLEN]; /* Current working dir path for error messages. */
     FILE *fp;
     rio rdb;
     int error = 0;
@@ -839,7 +842,12 @@ int rdbSave(char *filename) {
     snprintf(tmpfile,256,"temp-%d.rdb", (int) getpid());
     fp = fopen(tmpfile,"w");
     if (!fp) {
-        serverLog(LL_WARNING, "Failed opening .rdb for saving: %s",
+        char *cwdp = getcwd(cwd,MAXPATHLEN);
+        serverLog(LL_WARNING,
+            "Failed opening the RDB file %s (in server root dir %s) "
+            "for saving: %s",
+            filename,
+            cwdp ? cwdp : "unknown",
             strerror(errno));
         return C_ERR;
     }
@@ -858,10 +866,18 @@ int rdbSave(char *filename) {
     /* Use RENAME to make sure the DB file is changed atomically only
      * if the generate DB file is ok. */
     if (rename(tmpfile,filename) == -1) {
-        serverLog(LL_WARNING,"Error moving temp DB file on the final destination: %s", strerror(errno));
+        char *cwdp = getcwd(cwd,MAXPATHLEN);
+        serverLog(LL_WARNING,
+            "Error moving temp DB file %s on the final "
+            "destination %s (in server root dir %s): %s",
+            tmpfile,
+            filename,
+            cwdp ? cwdp : "unknown",
+            strerror(errno));
         unlink(tmpfile);
         return C_ERR;
     }
+
     serverLog(LL_NOTICE,"DB saved on disk");
     server.dirty = 0;
     server.lastsave = time(NULL);
@@ -1572,7 +1588,7 @@ int rdbSaveToSlavesSockets(void) {
             clientids[numfds] = slave->id;
             fds[numfds++] = slave->fd;
             replicationSetupSlaveForFullResync(slave,getPsyncInitialOffset());
-            /* Put the socket in non-blocking mode to simplify RDB transfer.
+            /* Put the socket in blocking mode to simplify RDB transfer.
              * We'll restore it when the children returns (since duped socket
              * will share the O_NONBLOCK attribute with the parent). */
             anetBlock(NULL,slave->fd);
@@ -1646,6 +1662,7 @@ int rdbSaveToSlavesSockets(void) {
             zfree(msg);
         }
         zfree(clientids);
+        rioFreeFdset(&slave_sockets);
         exitFromChild((retval == C_OK) ? 0 : 1);
     } else {
         /* Parent */
