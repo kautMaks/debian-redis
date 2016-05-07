@@ -1,8 +1,8 @@
-redis (2:3.2.0-2) UNRELEASED; urgency=medium
+redis (2:3.2.0-2) unstable; urgency=medium
 
   * Update redis.conf.
 
- -- Chris Lamb <lamby@debian.org>  Sat, 07 May 2016 11:05:40 +0100
+ -- Chris Lamb <lamby@debian.org>  Sat, 07 May 2016 11:05:52 +0100
 
 redis (2:3.2.0-1) unstable; urgency=medium
 
