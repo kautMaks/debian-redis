@@ -3,3 +3,4 @@
 03-use-system-jemalloc.diff
 04-dpkg-buildflags.diff
 05-SOURCE_DATE_EPOCH.diff
+0006-Skip-logging-tests-as-not-all-architectures-support-.patch
