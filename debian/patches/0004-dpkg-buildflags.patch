@@ -35,10 +35,10 @@ index 1dd894b..12ada21 100644
  
  linenoise.o: linenoise.h linenoise.c
 diff --git a/src/Makefile b/src/Makefile
-index 3800342..b2e9540 100644
+index 8fa84f6..1ff4241 100644
 --- a/src/Makefile
 +++ b/src/Makefile
-@@ -93,7 +93,7 @@ ifeq ($(MALLOC),jemalloc)
+@@ -97,7 +97,7 @@ ifeq ($(MALLOC),jemalloc)
  	FINAL_LIBS+= -ljemalloc
  endif
  

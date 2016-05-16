@@ -1,6 +1,7 @@
 redis (2:3.2.0-3) UNRELEASED; urgency=medium
 
   * Skip logging tests as not all architectures support it yet.
+  * Tidy patches.
 
  -- Chris Lamb <lamby@debian.org>  Mon, 16 May 2016 10:24:19 +0100
 
