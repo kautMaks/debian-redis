@@ -3,7 +3,7 @@ Section: database
 Priority: optional
 Maintainer: Chris Lamb <lamby@debian.org>
 Build-Depends:
- debhelper (>= 10),
+ debhelper (>= 9),
  dh-systemd (>= 1.5),
  libjemalloc-dev [linux-any],
  procps,
