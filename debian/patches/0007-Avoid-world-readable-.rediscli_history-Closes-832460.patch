@@ -1,0 +1,31 @@
+From: Chris Lamb <lamby@debian.org>
+Date: Tue, 26 Jul 2016 00:40:29 -0400
+Subject: Avoid world readable .rediscli_history (Closes: #832460)
+
+Thanks to kpcyrd <kpcyrd@rxv.cc>.
+
+Signed-off-by: Chris Lamb <lamby@debian.org>
+---
+ deps/linenoise/linenoise.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/deps/linenoise/linenoise.c b/deps/linenoise/linenoise.c
+index a807d9b..6ea3e78 100644
+--- a/deps/linenoise/linenoise.c
++++ b/deps/linenoise/linenoise.c
+@@ -111,6 +111,7 @@
+ #include <string.h>
+ #include <stdlib.h>
+ #include <ctype.h>
++#include <sys/stat.h>
+ #include <sys/types.h>
+ #include <sys/ioctl.h>
+ #include <unistd.h>
+@@ -1164,6 +1165,7 @@ int linenoiseHistorySave(const char *filename) {
+     int j;
+ 
+     if (fp == NULL) return -1;
++    chmod(filename,S_IRUSR|S_IWUSR);
+     for (j = 0; j < history_len; j++)
+         fprintf(fp,"%s\n",history[j]);
+     fclose(fp);
