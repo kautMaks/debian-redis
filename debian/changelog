@@ -1,9 +1,9 @@
-redis (2:3.2.1-3) UNRELEASED; urgency=medium
+redis (2:3.2.1-3) unstable; urgency=medium
 
   * Avoid world_readable ~/.rediscli_history files. Thanks to kpcyrd
     <kpcyrd@rxv.cc>. (Closes: #832460)
 
- -- Chris Lamb <lamby@debian.org>  Mon, 25 Jul 2016 21:47:55 +0100
+ -- Chris Lamb <lamby@debian.org>  Tue, 26 Jul 2016 23:48:07 -0400
 
 redis (2:3.2.1-2) unstable; urgency=medium
 
