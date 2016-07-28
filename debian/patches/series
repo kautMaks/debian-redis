@@ -5,3 +5,4 @@
 0005-SOURCE_DATE_EPOCH.patch
 0006-Skip-logging-tests-as-not-all-architectures-support-.patch
 0007-Avoid-world-readable-.rediscli_history-Closes-832460.patch
+0008-Drop-tests-with-timing-issues.patch

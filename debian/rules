@@ -27,8 +27,8 @@ override_dh_auto_build:
 override_dh_auto_test:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 	# Avoid race conditions in upstream testsuite. (#830500)
-	taskset --cpu-list 1 ./runtest
-	taskset --cpu-list 1 ./runtest-sentinel
+	./runtest
+	./runtest-sentinel
 endif
 
 override_dh_compress:
