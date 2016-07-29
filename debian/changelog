@@ -1,3 +1,9 @@
+redis (2:3.2.2-1) UNRELEASED; urgency=medium
+
+  * New upstream release.
+
+ -- Chris Lamb <lamby@debian.org>  Fri, 29 Jul 2016 10:00:29 -0400
+
 redis (2:3.2.1-4) unstable; urgency=high
 
   * Avoid race condition by setting and resetting umask(2) when
