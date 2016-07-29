@@ -1,10 +1,10 @@
-redis (2:3.2.2-1) UNRELEASED; urgency=medium
+redis (2:3.2.2-1) unstable; urgency=medium
 
   * New upstream release.
     - Sync debian/redis.conf with upstream.
     - Sync debian/sentinel.conf with upstream.
 
- -- Chris Lamb <lamby@debian.org>  Fri, 29 Jul 2016 10:00:29 -0400
+ -- Chris Lamb <lamby@debian.org>  Fri, 29 Jul 2016 10:08:08 -0400
 
 redis (2:3.2.1-4) unstable; urgency=high
 
