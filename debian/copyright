@@ -1,5 +1,7 @@
-Author: Salvatore Sanfilippo <antirez@gmail.com>
-Download: http://redis.io/
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Contact: Salvatore Sanfilippo <antirez@gmail.com>
+Upstream-Name: redis
+Source: https://github.com/antirez/redis
 
 Files: *
 Copyright: © 2006-2014 Salvatore Sanfilippo <antirez@gmail.com>
