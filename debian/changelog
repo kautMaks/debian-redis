@@ -1,6 +1,7 @@
 redis (2:3.2.2-2) UNRELEASED; urgency=medium
 
   * Add copyright-format 1.0 headers.
+  * Check we are running as root in LSB initscripts.
 
  -- Chris Lamb <lamby@debian.org>  Sat, 30 Jul 2016 09:10:22 -0400
 
