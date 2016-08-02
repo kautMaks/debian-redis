@@ -31,14 +31,13 @@ License: BSD-3-clause
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Files:
- src/rio.[ch]
+ src/rio.*
  src/t_zset.c
  src/ziplist.h
- src/intset.[ch]
+ src/intset.*
  src/redis-check-aof.c
- src/redis-check-dump.c
- deps/hiredis/
- deps/linenoise/
+ deps/hiredis/*
+ deps/linenoise/*
 Copyright:
  © 2009-2012 Pieter Noordhuis <pcnoordhuis@gmail.com>
  © 2009-2012 Salvatore Sanfilippo <antirez@gmail.com>
@@ -73,22 +72,18 @@ Files: utils/install_server.sh
 Copyright: © 2011 Dvir Volk <dvirsk@gmail.com>
 License: BSD-3-clause
 
-Files: deps/jemalloc/
+Files: deps/jemalloc/*
 Copyright:
  © 2002-2012 Jason Evans <jasone@canonware.com>
  © 2007-2012 Mozilla Foundation
  © 2009-2012 Facebook, Inc.
 License: BSD-3-clause
 
-Files: src/ae_kqueue.c
-Copyright: © 2009 Harish Mallipeddi <harish.mallipeddi@gmail.com>
-License: BSD-3-clause
-
-Files: src/pqsort.[ch]
+Files: src/pqsort.*
 Copyright: © 1992-1993 The Regents of the University of California
 License: BSD-3-clause
 
-Files: deps/lua/
+Files: deps/lua/*
 Copyright: © 1994-2012 Lua.org, PUC-Ri
 License: MIT
  Permission is hereby granted, free of charge, to any person obtaining a copy
