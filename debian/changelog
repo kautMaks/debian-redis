@@ -5,6 +5,7 @@ redis (2:3.2.3-1) UNRELEASED; urgency=medium
       was applied upstream.
   * Add copyright-format 1.0 headers.
     - Use "BSD-3-clause" over "BSD".
+    - Use separate ``License`` paragraphs.
     - Ensure all wildcards in ``Files:`` sections match.
   * Check we are running as root in LSB initscripts.
   * Add debian/README.source regarding debian/{redis,sentinel}.conf.
