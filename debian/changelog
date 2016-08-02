@@ -1,4 +1,4 @@
-redis (2:3.2.3-1) UNRELEASED; urgency=medium
+redis (2:3.2.3-1) unstable; urgency=medium
 
   * New upstream release.
     - Drop 0007-Avoid-world-readable-.rediscli_history-Closes-832460.patch as
@@ -10,7 +10,7 @@ redis (2:3.2.3-1) UNRELEASED; urgency=medium
   * Check we are running as root in LSB initscripts.
   * Add debian/README.source regarding debian/{redis,sentinel}.conf.
 
- -- Chris Lamb <lamby@debian.org>  Tue, 02 Aug 2016 12:57:00 -0400
+ -- Chris Lamb <lamby@debian.org>  Tue, 02 Aug 2016 13:40:01 -0400
 
 redis (2:3.2.2-1) unstable; urgency=medium
 
