@@ -1,6 +1,8 @@
 redis (2:3.2.3-1) UNRELEASED; urgency=medium
 
   * New upstream release.
+    - Drop 0007-Avoid-world-readable-.rediscli_history-Closes-832460.patch as
+      was applied upstream.
   * Add copyright-format 1.0 headers.
   * Check we are running as root in LSB initscripts.
   * Add debian/README.source regarding debian/{redis,sentinel}.conf.
