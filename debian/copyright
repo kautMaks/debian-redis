@@ -5,7 +5,7 @@ Source: https://github.com/antirez/redis
 
 Files: *
 Copyright: © 2006-2014 Salvatore Sanfilippo <antirez@gmail.com>
-License: BSD
+License: BSD-3-clause
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions
  are met:
@@ -42,7 +42,7 @@ Files:
 Copyright:
  © 2009-2012 Pieter Noordhuis <pcnoordhuis@gmail.com>
  © 2009-2012 Salvatore Sanfilippo <antirez@gmail.com>
-License: BSD
+License: BSD-3-clause
 
 Files:
  src/lzf.h
@@ -52,41 +52,41 @@ Files:
 Copyright:
  © 2000-2007 Marc Alexander Lehmann <schmorp@schmorp.de>
  © 2009-2012 Salvatore Sanfilippo <antirez@gmail.com>
-License: BSD
+License: BSD-3-clause
 
 Files: src/setproctitle.c
 Copyright:
  © 2010 William Ahern
  © 2013 Salvatore Sanfilippo
  © 2013 Stam He
-License: BSD
+License: BSD-3-clause
 
 Files: src/ae_evport.c
 Copyright: © 2012 Joyent, Inc.
-License: BSD
+License: BSD-3-clause
 
 Files: src/ae_kqueue.c
 Copyright: © 2009 Harish Mallipeddi <harish.mallipeddi@gmail.com>
-License: BSD
+License: BSD-3-clause
 
 Files: utils/install_server.sh
 Copyright: © 2011 Dvir Volk <dvirsk@gmail.com>
-License: BSD
+License: BSD-3-clause
 
 Files: deps/jemalloc/
 Copyright:
  © 2002-2012 Jason Evans <jasone@canonware.com>
  © 2007-2012 Mozilla Foundation
  © 2009-2012 Facebook, Inc.
-License: BSD
+License: BSD-3-clause
 
 Files: src/ae_kqueue.c
 Copyright: © 2009 Harish Mallipeddi <harish.mallipeddi@gmail.com>
-License: BSD
+License: BSD-3-clause
 
 Files: src/pqsort.[ch]
 Copyright: © 1992-1993 The Regents of the University of California
-License: BSD
+License: BSD-3-clause
 
 Files: deps/lua/
 Copyright: © 1994-2012 Lua.org, PUC-Ri
@@ -111,4 +111,4 @@ License: MIT
 
 Files: debian/*
 Copyright: © 2009 Chris Lamb <lamby@debian.org>
-License: BSD
+License: BSD-3-clause
