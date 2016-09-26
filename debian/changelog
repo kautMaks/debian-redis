@@ -1,6 +1,7 @@
 redis (3:3.2.4-1) UNRELEASED; urgency=medium
 
   * New upstream release.
+  * Sync debian/sentinel.conf.
 
  -- Chris Lamb <lamby@debian.org>  Mon, 26 Sep 2016 19:59:26 +0200
 
