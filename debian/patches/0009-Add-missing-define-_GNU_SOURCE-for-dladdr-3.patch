@@ -1,0 +1,20 @@
+From: Chris Lamb <lamby@debian.org>
+Date: Mon, 26 Sep 2016 20:19:54 +0200
+Subject: Add missing #define _GNU_SOURCE for dladdr(3)
+
+---
+ src/debug.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/src/debug.c b/src/debug.c
+index 3eac6fa..ca8aaea 100644
+--- a/src/debug.c
++++ b/src/debug.c
+@@ -40,6 +40,7 @@
+ #include <fcntl.h>
+ #include "bio.h"
+ #include <unistd.h>
++#define _GNU_SOURCE
+ #include <dlfcn.h>
+ #endif /* HAVE_BACKTRACE */
+ 
