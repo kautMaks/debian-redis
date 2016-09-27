@@ -1,20 +1,29 @@
 From: Chris Lamb <lamby@debian.org>
-Date: Mon, 26 Sep 2016 20:19:54 +0200
-Subject: Add missing #define _GNU_SOURCE for dladdr(3)
+Date: Tue, 27 Sep 2016 10:26:33 +0200
+Subject: Add missing dlfcn.h include for dladdr(3).
 
 ---
- src/debug.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ src/debug.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/src/debug.c b/src/debug.c
-index 3eac6fa..ca8aaea 100644
+index 3eac6fa..3bbdfa4 100644
 --- a/src/debug.c
 +++ b/src/debug.c
-@@ -40,6 +40,7 @@
+@@ -33,6 +33,8 @@
+ 
+ #include <arpa/inet.h>
+ #include <signal.h>
++#define _GNU_SOURCE
++#include <dlfcn.h>
+ 
+ #ifdef HAVE_BACKTRACE
+ #include <execinfo.h>
+@@ -40,7 +42,6 @@
  #include <fcntl.h>
  #include "bio.h"
  #include <unistd.h>
-+#define _GNU_SOURCE
- #include <dlfcn.h>
+-#include <dlfcn.h>
  #endif /* HAVE_BACKTRACE */
  
+ #ifdef __CYGWIN__

@@ -2,7 +2,9 @@ redis (3:3.2.4-1) UNRELEASED; urgency=medium
 
   * New upstream release.
   * Sync debian/sentinel.conf.
-  * Add missing "#define _GNU_SOURCE" for dladdr(3).
+  * Add missing include for dladdr(3).
+  * Add missing Depends on lsb-base for /lib/lsb/init-functions usage in
+    initscript. Thanks to Santiago Vila. (Closes: #838966)
 
  -- Chris Lamb <lamby@debian.org>  Mon, 26 Sep 2016 19:59:26 +0200
 
