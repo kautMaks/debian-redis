@@ -1,4 +1,4 @@
-redis (3:3.2.4-1) UNRELEASED; urgency=medium
+redis (3:3.2.4-1) unstable; urgency=medium
 
   * New upstream release.
   * Sync debian/sentinel.conf.
@@ -6,7 +6,7 @@ redis (3:3.2.4-1) UNRELEASED; urgency=medium
   * Add missing Depends on lsb-base for /lib/lsb/init-functions usage in
     initscript. Thanks to Santiago Vila. (Closes: #838966)
 
- -- Chris Lamb <lamby@debian.org>  Mon, 26 Sep 2016 19:59:26 +0200
+ -- Chris Lamb <lamby@debian.org>  Tue, 27 Sep 2016 11:12:13 +0200
 
 redis (3:3.2.3-2) unstable; urgency=medium
 
