@@ -19,7 +19,7 @@ index 648127a..8fa84f6 100644
  ifeq ($(MALLOC),jemalloc)
 -	DEPENDENCY_TARGETS+= jemalloc
 -	FINAL_CFLAGS+= -DUSE_JEMALLOC -I../deps/jemalloc/include
--	FINAL_LIBS+= ../deps/jemalloc/lib/libjemalloc.a -ldl
+-	FINAL_LIBS+= ../deps/jemalloc/lib/libjemalloc.a
 +	FINAL_CFLAGS+= -DUSE_JEMALLOC -I/usr/include/jemalloc/include
 +	FINAL_LIBS+= -ljemalloc
  endif

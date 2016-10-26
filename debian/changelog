@@ -1,6 +1,8 @@
 redis (3:3.2.5-1) UNRELEASED; urgency=medium
 
   * New upstream release.
+    - Refresh debian/patches/0003-use-system-jemalloc.patch to accomodate
+      missing -ldl flag.
 
  -- Chris Lamb <lamby@debian.org>  Wed, 26 Oct 2016 16:28:41 +0100
 
