@@ -1,3 +1,9 @@
+redis (3:3.2.5-1) UNRELEASED; urgency=medium
+
+  * New upstream release.
+
+ -- Chris Lamb <lamby@debian.org>  Wed, 26 Oct 2016 16:28:41 +0100
+
 redis (3:3.2.4-2) unstable; urgency=medium
 
   * Ensure that sentinel's configuration actually writes to a pidfile location
