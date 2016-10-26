@@ -1,11 +1,11 @@
-redis (3:3.2.5-1) UNRELEASED; urgency=medium
+redis (3:3.2.5-1) unstable; urgency=medium
 
   * New upstream release.
     - Refresh debian/patches/0003-use-system-jemalloc.patch to accomodate
       missing -ldl flag.
   * Refresh all patches with "pq import / pq export".
 
- -- Chris Lamb <lamby@debian.org>  Wed, 26 Oct 2016 16:28:41 +0100
+ -- Chris Lamb <lamby@debian.org>  Wed, 26 Oct 2016 16:36:49 +0100
 
 redis (3:3.2.4-2) unstable; urgency=medium
 
