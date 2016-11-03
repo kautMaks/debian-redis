@@ -4,6 +4,7 @@ redis (3:3.2.5-2) UNRELEASED; urgency=medium
     - chmod(1) directories to 0750.
     - Allow local administrator to override permissions with
       dpkg-statoverride.
+    - Set UMask= in .service files, at least to match SystemV initscripts.
 
  -- Chris Lamb <lamby@debian.org>  Thu, 03 Nov 2016 11:54:51 +0000
 
