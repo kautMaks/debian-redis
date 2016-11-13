@@ -1,9 +1,9 @@
-redis (3:3.2.5-3) UNRELEASED; urgency=medium
+redis (3:3.2.5-3) unstable; urgency=medium
 
   * Also run redis-benchmark in autopkgtests to stress-test the installation
     better.
 
- -- Chris Lamb <lamby@debian.org>  Sun, 13 Nov 2016 14:56:25 +0000
+ -- Chris Lamb <lamby@debian.org>  Sun, 13 Nov 2016 15:03:18 +0000
 
 redis (3:3.2.5-2) unstable; urgency=medium
 
