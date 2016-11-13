@@ -1,3 +1,10 @@
+redis (3:3.2.5-3) UNRELEASED; urgency=medium
+
+  * Also run redis-benchmark in autopkgtests to stress-test the installation
+    better.
+
+ -- Chris Lamb <lamby@debian.org>  Sun, 13 Nov 2016 14:56:25 +0000
+
 redis (3:3.2.5-2) unstable; urgency=medium
 
   * Tighten permissions of /var/{lib,log}/redis. (Closes: #842987)
