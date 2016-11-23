@@ -1,3 +1,9 @@
+redis (3:3.2.5-4) UNRELEASED; urgency=medium
+
+  * Install upstream's MANIFESTO and README.md.
+
+ -- Chris Lamb <lamby@debian.org>  Wed, 23 Nov 2016 15:40:41 +0000
+
 redis (3:3.2.5-3) unstable; urgency=medium
 
   * Also run redis-benchmark in autopkgtests to stress-test the installation
