@@ -49,6 +49,7 @@ Description: Persistent key-value database with network interface (client)
 Package: redis-sentinel
 Architecture: any
 Depends:
+ lsb-base (>= 3.2-14),
  redis-server (= ${binary:Version}),
  ${misc:Depends},
  ${shlibs:Depends}
