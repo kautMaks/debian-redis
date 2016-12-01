@@ -1,9 +1,9 @@
-redis (3:3.2.5-5) UNRELEASED; urgency=medium
+redis (3:3.2.5-5) unstable; urgency=medium
 
   * Add RunTimeDirectory=redis to systemd .service files.
     (Closes: #846350)
 
- -- Chris Lamb <lamby@debian.org>  Thu, 01 Dec 2016 11:48:26 +0000
+ -- Chris Lamb <lamby@debian.org>  Thu, 01 Dec 2016 11:48:51 +0000
 
 redis (3:3.2.5-4) unstable; urgency=medium
 
