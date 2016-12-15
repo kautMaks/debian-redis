@@ -1,7 +1,8 @@
 From: Chris Lamb <lamby@debian.org>
 Date: Fri, 30 Oct 2015 10:53:42 +0000
-Subject: use-system-jemalloc
+Subject: Use system jemalloc
 
+Debian Bugs: #654900, #654902
 ---
  src/Makefile  | 5 ++---
  src/debug.c   | 6 +++---

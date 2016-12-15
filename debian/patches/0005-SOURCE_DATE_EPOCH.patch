@@ -1,7 +1,8 @@
 From: Chris Lamb <lamby@debian.org>
 Date: Wed, 6 Jan 2016 11:23:26 +0000
-Subject: SOURCE_DATE_EPOCH
+Subject: Add support for SOURCE_DATE_EPOCH.
 
+Filed upstream as <https://github.com/antirez/redis/pull/2992>.
 ---
  src/mkreleasehdr.sh | 3 +++
  1 file changed, 3 insertions(+)

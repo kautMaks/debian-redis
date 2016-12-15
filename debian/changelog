@@ -1,6 +1,7 @@
 redis (3:3.2.6-2) UNRELEASED; urgency=medium
 
   * Refresh all patches with pq import -> pq export.
+  * Tidy all patches, updating descriptions and use Pq-Topic to organise.
 
  -- Chris Lamb <lamby@debian.org>  Thu, 15 Dec 2016 09:52:42 +0100
 

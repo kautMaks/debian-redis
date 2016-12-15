@@ -1,11 +1,11 @@
 From: Chris Lamb <lamby@debian.org>
 Date: Fri, 30 Oct 2015 10:53:42 +0000
-Subject: fix-ftbfs-on-kfreebsd
+Subject: Fix FTBFS on kfreebsd
 
-# Description: Fix FTBFS on kfreebsd
-# Bug: https://github.com/redis/hiredis/pull/254
-# Bug-Debian: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=754634
-# Author: Chris Lamb <lamby@debian.org>
+Filed and fixed upstream as <https://github.com/redis/hiredis/pull/254>, but
+the embedded code copy of hiredis in redis has not been updated.
+
+Debian bug: #754634
 ---
  deps/hiredis/net.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)

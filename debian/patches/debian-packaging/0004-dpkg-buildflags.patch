@@ -1,6 +1,6 @@
-From: Chris Lamb <lamby@debian.org>
+From: Guillaume Delacour <gui@iroqwa.org>
 Date: Fri, 30 Oct 2015 10:53:42 +0000
-Subject: Add CPPFLAGS in upstream makefiles
+Subject: Add CPPFLAGS in upstream Makefiles to support hardening, etc.
 
 ---
  deps/hiredis/Makefile   | 2 +-
