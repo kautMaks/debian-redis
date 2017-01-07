@@ -1,11 +1,11 @@
-redis (3:3.2.6-2) UNRELEASED; urgency=medium
+redis (3:3.2.6-2) unstable; urgency=medium
 
   * Rename RunTimeDirectory -> RuntimeDirectory in .service files.
     (Closes: #850534)
   * Refresh all patches with pq import -> pq export.
   * Tidy all patches, updating descriptions and use Pq-Topic to organise.
 
- -- Chris Lamb <lamby@debian.org>  Thu, 15 Dec 2016 09:52:42 +0100
+ -- Chris Lamb <lamby@debian.org>  Sat, 07 Jan 2017 18:06:14 +0000
 
 redis (3:3.2.6-1) unstable; urgency=medium
 
