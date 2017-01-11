@@ -1,3 +1,11 @@
+redis (3:3.2.6-3) UNRELEASED; urgency=medium
+
+  * Don't ship a "duplicate" redis-server binary in redis-tools as
+    /usr/bin/redis-check-rdb (it checks argv to change its behaviour) by
+    replacing it with a symlink. Found by <https://dedup.debian.net/>.
+
+ -- Chris Lamb <lamby@debian.org>  Wed, 11 Jan 2017 16:49:56 +0000
+
 redis (3:3.2.6-2) unstable; urgency=medium
 
   * Rename RunTimeDirectory -> RuntimeDirectory in .service files.
