@@ -1,7 +1,7 @@
 redis (3:3.2.6-4) UNRELEASED; urgency=medium
 
-  * Expand the documentation in redis-server.service regarding the default
-    hardening options.
+  * Expand the documentation in redis-server.service and redis-sentinel
+    regarding the default hardening options.
 
  -- Chris Lamb <lamby@debian.org>  Sat, 21 Jan 2017 11:06:14 +1100
 
