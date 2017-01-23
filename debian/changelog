@@ -1,3 +1,10 @@
+redis (3:3.2.6-6) UNRELEASED; urgency=medium
+
+  * Use --cpu-list 0 (not --cpu-list 1) to ensure compilation on single-CPU
+    machines. (Closes: #852347)
+
+ -- Chris Lamb <lamby@debian.org>  Tue, 24 Jan 2017 11:58:18 +1300
+
 redis (3:3.2.6-5) unstable; urgency=medium
 
   * Re-add taskset calls to try and avoid FTBFS due to parallelism in upstream
