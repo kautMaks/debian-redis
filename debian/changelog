@@ -1,9 +1,9 @@
-redis (3:3.2.6-5) UNRELEASED; urgency=medium
+redis (3:3.2.6-5) unstable; urgency=medium
 
   * Re-add taskset calls to try and avoid FTBFS due to parallelism in upstream
     test suite.
 
- -- Chris Lamb <lamby@debian.org>  Mon, 23 Jan 2017 13:24:14 +1300
+ -- Chris Lamb <lamby@debian.org>  Mon, 23 Jan 2017 13:24:39 +1300
 
 redis (3:3.2.6-4) unstable; urgency=medium
 
