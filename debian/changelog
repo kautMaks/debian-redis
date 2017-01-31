@@ -1,3 +1,9 @@
+redis (3:3.2.7-1) UNRELEASED; urgency=medium
+
+  * New upstream release.
+
+ -- Chris Lamb <lamby@debian.org>  Wed, 01 Feb 2017 09:26:16 +1300
+
 redis (3:3.2.6-6) unstable; urgency=medium
 
   * Use --cpu-list 0 (not --cpu-list 1) to ensure compilation on single-CPU
