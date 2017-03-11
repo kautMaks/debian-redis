@@ -1,4 +1,4 @@
-redis (3:3.2.8-2) UNRELEASED; urgency=medium
+redis (3:3.2.8-2) unstable; urgency=medium
 
   * Avoid conflict between RuntimeDirectory and tmpfiles.d(5) both attempting
     to create /run/redis with differing permissions.
@@ -17,7 +17,7 @@ redis (3:3.2.8-2) UNRELEASED; urgency=medium
     requiring tmpfiles.d(5) and we appear to need RuntimeDirectory anyway for
     #846350. (Closes: #856116)
 
- -- Chris Lamb <lamby@debian.org>  Sat, 11 Mar 2017 12:10:50 +0000
+ -- Chris Lamb <lamby@debian.org>  Sat, 11 Mar 2017 12:53:14 +0000
 
 redis (3:3.2.8-1) unstable; urgency=medium
 
