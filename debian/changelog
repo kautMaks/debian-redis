@@ -1,3 +1,20 @@
+redis (3:3.2.8-3) UNRELEASED; urgency=medium
+
+  * Revert the creation of the redis-tools:/usr/bin/redis-check-rdb ->
+    redis-server:/usr/bin/redis-server symlink to avoid a dangling symlink if
+    only the redis-tools binary package is installed.
+
+    This was a regression since 3:3.2.6-3 where we attempted to avoid shipping
+    duplicate file; the redis-server binary changes behaviour based on the
+    contents of argv.
+
+    One alternative would be to ship a symlink in redis-server but that would
+    mean users wishing to check RDB databases would have to install the server
+    package, so reverting to shipping a duplicate file seems justified.
+    (Closes: #858519)
+
+ -- Chris Lamb <lamby@debian.org>  Thu, 23 Mar 2017 11:49:59 +0000
+
 redis (3:3.2.8-2) unstable; urgency=medium
 
   * Avoid conflict between RuntimeDirectory and tmpfiles.d(5) both attempting
