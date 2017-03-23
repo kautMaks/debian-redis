@@ -1,4 +1,4 @@
-redis (3:3.2.8-3) UNRELEASED; urgency=medium
+redis (3:3.2.8-3) unstable; urgency=medium
 
   * Revert the creation of the redis-tools:/usr/bin/redis-check-rdb ->
     redis-server:/usr/bin/redis-server symlink to avoid a dangling symlink if
@@ -13,7 +13,7 @@ redis (3:3.2.8-3) UNRELEASED; urgency=medium
     package, so reverting to shipping a duplicate file seems justified.
     (Closes: #858519)
 
- -- Chris Lamb <lamby@debian.org>  Thu, 23 Mar 2017 11:49:59 +0000
+ -- Chris Lamb <lamby@debian.org>  Thu, 23 Mar 2017 12:00:22 +0000
 
 redis (3:3.2.8-2) unstable; urgency=medium
 
