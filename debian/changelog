@@ -1,3 +1,9 @@
+redis (3:3.2.8-4) UNRELEASED; urgency=medium
+
+  * Specify <!nocheck> for test-related Build-Depends.
+
+ -- Chris Lamb <lamby@debian.org>  Wed, 29 Mar 2017 16:12:22 +0100
+
 redis (3:3.2.8-3) unstable; urgency=medium
 
   * Revert the creation of the redis-tools:/usr/bin/redis-check-rdb ->
