@@ -1,6 +1,7 @@
 redis (3:3.2.8-4) UNRELEASED; urgency=medium
 
   * Specify <!nocheck> for test-related Build-Depends.
+  * Bump debhelper compatibility level to 10.
 
  -- Chris Lamb <lamby@debian.org>  Wed, 29 Mar 2017 16:12:22 +0100
 
