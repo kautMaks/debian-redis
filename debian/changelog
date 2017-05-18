@@ -1,9 +1,10 @@
-redis (3:3.2.8-4) UNRELEASED; urgency=medium
+redis (3:3.2.9-1) UNRELEASED; urgency=medium
 
+  * New upstream minor bugfix release.
   * Specify <!nocheck> for test-related Build-Depends.
   * Bump debhelper compatibility level to 10.
 
- -- Chris Lamb <lamby@debian.org>  Wed, 29 Mar 2017 16:12:22 +0100
+ -- Chris Lamb <lamby@debian.org>  Thu, 18 May 2017 12:30:29 +0200
 
 redis (3:3.2.8-3) unstable; urgency=medium
 
