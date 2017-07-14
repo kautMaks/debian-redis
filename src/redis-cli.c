@@ -340,7 +340,7 @@ static void cliOutputGenericHelp(void) {
         "      \"help <tab>\" to get a list of possible help topics\n"
         "      \"quit\" to exit\n"
         "\n"
-        "To set redis-cli perferences:\n"
+        "To set redis-cli preferences:\n"
         "      \":set hints\" enable online hints\n"
         "      \":set nohints\" disable online hints\n"
         "Set your preferences in ~/.redisclirc\n",
@@ -847,8 +847,10 @@ static int cliSendCommand(int argc, char **argv, int repeat) {
     output_raw = 0;
     if (!strcasecmp(command,"info") ||
         (argc >= 2 && !strcasecmp(command,"debug") &&
-                      ((!strcasecmp(argv[1],"jemalloc") && !strcasecmp(argv[2],"info")) ||
-                       !strcasecmp(argv[1],"htstats"))) ||
+                       !strcasecmp(argv[1],"htstats")) ||
+        (argc >= 2 && !strcasecmp(command,"memory") &&
+                      (!strcasecmp(argv[1],"malloc-stats") ||
+                       !strcasecmp(argv[1],"doctor"))) ||
         (argc == 2 && !strcasecmp(command,"cluster") &&
                       (!strcasecmp(argv[1],"nodes") ||
                        !strcasecmp(argv[1],"info"))) ||
@@ -1121,6 +1123,12 @@ static void usage(void) {
 "  --csv              Output in CSV format.\n"
 "  --stat             Print rolling stats about server: mem, clients, ...\n"
 "  --latency          Enter a special mode continuously sampling latency.\n"
+"                     If you use this mode in an interactive session it runs\n"
+"                     forever displaying real-time stats. Otherwise if --raw or\n"
+"                     --csv is specified, or if you redirect the output to a non\n"
+"                     TTY, it samples the latency for 1 second (you can use\n"
+"                     -i to change the interval), then produces a single output\n"
+"                     and exits.\n"
 "  --latency-history  Like --latency but tracking latency changes over time.\n"
 "                     Default time interval is 15 sec. Change it using -i.\n"
 "  --latency-dist     Shows latency as a spectrum, requires xterm 256 colors.\n"
@@ -1224,7 +1232,7 @@ static sds *cliSplitArgs(char *line, int *argc) {
     }
 }
 
-/* Set the CLI perferences. This function is invoked when an interactive
+/* Set the CLI preferences. This function is invoked when an interactive
  * ":command" is called, or when reading ~/.redisclirc file, in order to
  * set user preferences. */
 void cliSetPreferences(char **argv, int argc, int interactive) {
@@ -1351,7 +1359,9 @@ static void repl(void) {
                     }
 
                     elapsed = mstime()-start_time;
-                    if (elapsed >= 500) {
+                    if (elapsed >= 500 &&
+                        config.output == OUTPUT_STANDARD)
+                    {
                         printf("(%.2fs)\n",(double)elapsed/1000);
                     }
                 }
@@ -1468,6 +1478,18 @@ static int evalMode(int argc, char **argv) {
  * Latency and latency history modes
  *--------------------------------------------------------------------------- */
 
+static void latencyModePrint(long long min, long long max, double avg, long long count) {
+    if (config.output == OUTPUT_STANDARD) {
+        printf("min: %lld, max: %lld, avg: %.2f (%lld samples)",
+                min, max, avg, count);
+        fflush(stdout);
+    } else if (config.output == OUTPUT_CSV) {
+        printf("%lld,%lld,%.2f,%lld\n", min, max, avg, count);
+    } else if (config.output == OUTPUT_RAW) {
+        printf("%lld %lld %.2f %lld\n", min, max, avg, count);
+    }
+}
+
 #define LATENCY_SAMPLE_RATE 10 /* milliseconds. */
 #define LATENCY_HISTORY_DEFAULT_INTERVAL 15000 /* milliseconds. */
 static void latencyMode(void) {
@@ -1478,6 +1500,14 @@ static void latencyMode(void) {
                           LATENCY_HISTORY_DEFAULT_INTERVAL;
     double avg;
     long long history_start = mstime();
+
+    /* Set a default for the interval in case of --latency option
+     * with --raw, --csv or when it is redirected to non tty. */
+    if (config.interval == 0) {
+        config.interval = 1000;
+    } else {
+        config.interval /= 1000; /* We need to convert to milliseconds. */
+    }
 
     if (!context) exit(1);
     while(1) {
@@ -1499,9 +1529,19 @@ static void latencyMode(void) {
             tot += latency;
             avg = (double) tot/count;
         }
-        printf("\x1b[0G\x1b[2Kmin: %lld, max: %lld, avg: %.2f (%lld samples)",
-            min, max, avg, count);
-        fflush(stdout);
+
+        if (config.output == OUTPUT_STANDARD) {
+            printf("\x1b[0G\x1b[2K"); /* Clear the line. */
+            latencyModePrint(min,max,avg,count);
+        } else {
+            if (config.latency_history) {
+                latencyModePrint(min,max,avg,count);
+            } else if (mstime()-history_start > config.interval) {
+                latencyModePrint(min,max,avg,count);
+                exit(0);
+            }
+        }
+
         if (config.latency_history && mstime()-history_start > history_interval)
         {
             printf(" -- %.2f seconds range\n", (float)(mstime()-history_start)/1000);
@@ -2417,7 +2457,7 @@ long long powerLawRand(long long min, long long max, double alpha) {
 /* Generates a key name among a set of lru_test_sample_size keys, using
  * an 80-20 distribution. */
 void LRUTestGenKey(char *buf, size_t buflen) {
-    snprintf(buf, buflen, "lru:%lld\n",
+    snprintf(buf, buflen, "lru:%lld",
         powerLawRand(1, config.lru_test_sample_size, 6.2));
 }
 
@@ -2439,8 +2479,11 @@ static void LRUTestMode(void) {
         while(mstime() - start_cycle < 1000) {
             /* Write cycle. */
             for (j = 0; j < LRU_CYCLE_PIPELINE_SIZE; j++) {
+                char val[6];
+                val[5] = '\0';
+                for (int i = 0; i < 5; i++) val[i] = 'A'+rand()%('z'-'A');
                 LRUTestGenKey(key,sizeof(key));
-                redisAppendCommand(context, "SET %s val",key);
+                redisAppendCommand(context, "SET %s %s",key,val);
             }
             for (j = 0; j < LRU_CYCLE_PIPELINE_SIZE; j++)
                 redisGetReply(context, (void**)&reply);

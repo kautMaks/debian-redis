@@ -565,7 +565,7 @@ invalid:
 
 usage:
     printf(
-"Usage: redis-benchmark [-h <host>] [-p <port>] [-c <clients>] [-n <requests]> [-k <boolean>]\n\n"
+"Usage: redis-benchmark [-h <host>] [-p <port>] [-c <clients>] [-n <requests>] [-k <boolean>]\n\n"
 " -h <hostname>      Server hostname (default 127.0.0.1)\n"
 " -p <port>          Server port (default 6379)\n"
 " -s <socket>        Server socket (overrides host and port)\n"
@@ -776,6 +776,13 @@ int main(int argc, const char **argv) {
             len = redisFormatCommand(&cmd,
                 "SADD myset element:__rand_int__");
             benchmark("SADD",cmd,len);
+            free(cmd);
+        }
+
+        if (test_is_selected("hset")) {
+            len = redisFormatCommand(&cmd,
+                "HSET myset:__rand_int__ element:__rand_int__ %s",data);
+            benchmark("HSET",cmd,len);
             free(cmd);
         }
 
