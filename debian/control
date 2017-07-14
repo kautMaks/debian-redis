@@ -9,7 +9,7 @@ Build-Depends:
  libjemalloc-dev [linux-any],
  procps <!nocheck>,
  tcl <!nocheck>
-Standards-Version: 3.9.8
+Standards-Version: 4.0.0
 Homepage: http://redis.io/
 Vcs-Git: https://github.com/lamby/pkg-redis.git
 Vcs-Browser: https://github.com/lamby/pkg-redis
