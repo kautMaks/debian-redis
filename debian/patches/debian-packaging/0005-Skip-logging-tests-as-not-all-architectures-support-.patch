@@ -7,7 +7,7 @@ Subject: Skip logging tests as not all architectures support it yet
  1 file changed, 1 deletion(-)
 
 diff --git a/tests/test_helper.tcl b/tests/test_helper.tcl
-index 9a6e6730..e38ae10d 100644
+index 41c8678..51a4bc4 100644
 --- a/tests/test_helper.tcl
 +++ b/tests/test_helper.tcl
 @@ -40,7 +40,6 @@ set ::all_tests {
@@ -15,6 +15,6 @@ index 9a6e6730..e38ae10d 100644
      integration/rdb
      integration/convert-zipmap-hash-on-load
 -    integration/logging
+     integration/psync2
+     integration/psync2-reg
      unit/pubsub
-     unit/slowlog
-     unit/scripting

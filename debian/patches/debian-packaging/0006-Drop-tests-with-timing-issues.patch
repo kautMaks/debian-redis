@@ -7,7 +7,7 @@ Subject: Drop tests with timing issues.
  1 file changed, 1 deletion(-)
 
 diff --git a/tests/test_helper.tcl b/tests/test_helper.tcl
-index e38ae10d..5b895810 100644
+index 51a4bc4..0ee9152 100644
 --- a/tests/test_helper.tcl
 +++ b/tests/test_helper.tcl
 @@ -36,7 +36,6 @@ set ::all_tests {
