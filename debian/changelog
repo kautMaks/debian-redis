@@ -1,3 +1,21 @@
+redis (4:4.0.0-2) unstable; urgency=medium
+
+  * Make /usr/bin/redis-server in the main redis-server package a symlink to
+    /usr/bin/redis-check-rdb in the redis-tools package.
+
+    Whilst this prevents a wasteful duplication of a binary, it moreover
+    ensures there are no duplicate debug symbols which was preventing the
+    simultaneous installation of the redis-server-dbgsym and
+    redis-tools-dbgsym packages.
+
+    Note that this results in the peculiar (and possibily confusing) situation
+    where the main package does not have the main binary anymore, or indeed
+    any binaries whatsoever. See also the previous parallel attempt at a
+    symlink changes in 3.2.6-3 which was reverted in 3.2.8-3. Thanks to Adrian
+    Bunk for the report. (Closes: #868551)
+
+ -- Chris Lamb <lamby@debian.org>  Sun, 16 Jul 2017 22:25:29 +0100
+
 redis (4:4.0.0-1) unstable; urgency=medium
 
   * New upstream major release.
