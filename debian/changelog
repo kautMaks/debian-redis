@@ -1,3 +1,12 @@
+redis (4:4.0.0-3) unstable; urgency=medium
+
+  * Add -latomic to LDFLAGS to attempt to avoid FTBFS on mips{,el}.
+  * Allow ulimit calls to fail in sysvinit scripts to avoid issues when
+    running in a containerised environment. See
+    <https://github.com/travis-ci/travis-ci/issues/7941>.
+
+ -- Chris Lamb <lamby@debian.org>  Sun, 23 Jul 2017 15:42:18 +0100
+
 redis (4:4.0.0-2) unstable; urgency=medium
 
   * Make /usr/bin/redis-server in the main redis-server package a symlink to
