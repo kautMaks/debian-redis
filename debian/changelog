@@ -2,6 +2,7 @@ redis (4:4.0.1-1) UNRELEASED; urgency=medium
 
   * New upstream version.
   * Install 00-RELEASENOTES as the upstream changelog.
+  * Use "dh_auto_clean" over "clean" target.
 
  -- Chris Lamb <lamby@debian.org>  Mon, 24 Jul 2017 16:02:34 +0100
 
