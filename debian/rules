@@ -35,6 +35,9 @@ endif
 override_dh_compress:
 	dh_compress -Xredis-trib.rb
 
+override_dh_installchangelogs:
+	dh_installchangelogs --keep 00-RELEASENOTES
+
 clean:
 	dh $@
 	rm -f src/release.h
