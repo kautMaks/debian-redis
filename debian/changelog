@@ -1,3 +1,10 @@
+redis (4:4.0.1-2) unstable; urgency=medium
+
+  * Skip yet more non-deterministic replication tests that rely on timing.
+    (Closes: #857855)
+
+ -- Chris Lamb <lamby@debian.org>  Tue, 25 Jul 2017 18:57:39 +0100
+
 redis (4:4.0.1-1) unstable; urgency=medium
 
   * New upstream version.
