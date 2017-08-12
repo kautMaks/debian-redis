@@ -1,5 +1,3 @@
-Depends: @
-Test-Command: debian/tests/0001-redis-cli
+Tests: 0001-redis-cli
 
-Depends: @
-Test-Command: debian/tests/0002-benchmark
+Tests: 0002-benchmark
