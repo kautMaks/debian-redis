@@ -1,3 +1,10 @@
+redis (4:4.0.1-7) unstable; urgency=medium
+
+  * Don't let sentinel tests fail the build; they use too many timers to be
+    useful and/or meaningful. (Closes: #872075)
+
+ -- Chris Lamb <lamby@debian.org>  Mon, 14 Aug 2017 07:35:38 -0700
+
 redis (4:4.0.1-6) unstable; urgency=medium
 
   * Don't install completions to
