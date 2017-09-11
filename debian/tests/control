@@ -1,3 +1,6 @@
 Tests: 0001-redis-cli
 
 Tests: 0002-benchmark
+
+Tests: 0003-redis-check-aof
+Restrictions: allow-stderr
