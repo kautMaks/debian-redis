@@ -1,0 +1,5 @@
+#!/bin/sh
+#
+# Test redis-check-rdb
+
+redis-check-rdb /var/lib/redis/dump.rdb
