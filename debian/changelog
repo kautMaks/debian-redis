@@ -1,9 +1,11 @@
-redis (4:4.0.2-1) UNRELEASED; urgency=medium
+redis (4:4.0.2-1) unstable; urgency=medium
 
   * New upstream release ("Upgrade urgency HIGH: Several potentially critical
     bugs fixed.")
+  * Bump Standards-Version to 4.1.0.
+  * Drop Build-Depends on dh-systemd (>= 1.5).
 
- -- Chris Lamb <lamby@debian.org>  Sun, 24 Sep 2017 19:42:57 +0100
+ -- Chris Lamb <lamby@debian.org>  Sun, 24 Sep 2017 19:46:10 +0100
 
 redis (4:4.0.1-7) unstable; urgency=medium
 
