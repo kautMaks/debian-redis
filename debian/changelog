@@ -1,3 +1,10 @@
+redis (4:4.0.2-1) UNRELEASED; urgency=medium
+
+  * New upstream release ("Upgrade urgency HIGH: Several potentially critical
+    bugs fixed.")
+
+ -- Chris Lamb <lamby@debian.org>  Sun, 24 Sep 2017 19:42:57 +0100
+
 redis (4:4.0.1-7) unstable; urgency=medium
 
   * Don't let sentinel tests fail the build; they use too many timers to be
