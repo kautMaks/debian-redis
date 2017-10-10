@@ -4,3 +4,4 @@ debian-packaging/0003-dpkg-buildflags.patch
 0004-SOURCE_DATE_EPOCH.patch
 debian-packaging/0005-Skip-logging-tests-as-not-all-architectures-support-.patch
 debian-packaging/0006-Drop-tests-with-timing-issues.patch
+debian-packaging/0007-Set-Debian-configuration-defaults.patch
