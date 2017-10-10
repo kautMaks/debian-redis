@@ -9,7 +9,7 @@ Subject: Add CPPFLAGS in upstream makefiles
  3 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/deps/hiredis/Makefile b/deps/hiredis/Makefile
-index 9a4de83..4c8a8e4 100644
+index 9a4de83600dd..4c8a8e48bc46 100644
 --- a/deps/hiredis/Makefile
 +++ b/deps/hiredis/Makefile
 @@ -41,7 +41,7 @@ CXX:=$(shell sh -c 'type $(CXX) >/dev/null 2>/dev/null && echo $(CXX) || echo g+
@@ -22,7 +22,7 @@ index 9a4de83..4c8a8e4 100644
  
  DYLIBSUFFIX=so
 diff --git a/deps/linenoise/Makefile b/deps/linenoise/Makefile
-index 1dd894b..12ada21 100644
+index 1dd894b49e9b..12ada216e106 100644
 --- a/deps/linenoise/Makefile
 +++ b/deps/linenoise/Makefile
 @@ -6,7 +6,7 @@ R_CFLAGS= $(STD) $(WARN) $(OPT) $(DEBUG) $(CFLAGS)
@@ -35,7 +35,7 @@ index 1dd894b..12ada21 100644
  
  linenoise.o: linenoise.h linenoise.c
 diff --git a/src/Makefile b/src/Makefile
-index f7b8cba..c101864 100644
+index f7b8cba5c339..c10186457652 100644
 --- a/src/Makefile
 +++ b/src/Makefile
 @@ -124,7 +124,7 @@ ifeq ($(MALLOC),jemalloc)

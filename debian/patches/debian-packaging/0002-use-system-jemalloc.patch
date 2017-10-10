@@ -10,7 +10,7 @@ Subject: use-system-jemalloc
  4 files changed, 12 insertions(+), 10 deletions(-)
 
 diff --git a/src/Makefile b/src/Makefile
-index 86e0b3f..f7b8cba 100644
+index 86e0b3fe0602..f7b8cba5c339 100644
 --- a/src/Makefile
 +++ b/src/Makefile
 @@ -120,9 +120,8 @@ ifeq ($(MALLOC),tcmalloc_minimal)
@@ -26,7 +26,7 @@ index 86e0b3f..f7b8cba 100644
  
  REDIS_CC=$(QUIET_CC)$(CC) $(FINAL_CFLAGS)
 diff --git a/src/object.c b/src/object.c
-index 08c9ad9..752bbdf 100644
+index 2565ed59f56e..5c12743148a9 100644
 --- a/src/object.c
 +++ b/src/object.c
 @@ -36,6 +36,9 @@
@@ -40,7 +40,7 @@ index 08c9ad9..752bbdf 100644
  
  robj *createObject(int type, void *ptr) {
 diff --git a/src/zmalloc.c b/src/zmalloc.c
-index 094dd80..9619faa 100644
+index 094dd80fafd0..9619faa16525 100644
 --- a/src/zmalloc.c
 +++ b/src/zmalloc.c
 @@ -62,12 +62,12 @@ void zlibc_free(void *ptr) {
@@ -63,7 +63,7 @@ index 094dd80..9619faa 100644
  
  #define update_zmalloc_stat_alloc(__n) do { \
 diff --git a/src/zmalloc.h b/src/zmalloc.h
-index 64f2f36..d9d2078 100644
+index 64f2f36aad5d..d9d20784e23d 100644
 --- a/src/zmalloc.h
 +++ b/src/zmalloc.h
 @@ -50,7 +50,7 @@

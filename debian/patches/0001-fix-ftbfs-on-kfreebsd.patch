@@ -11,7 +11,7 @@ Subject: fix-ftbfs-on-kfreebsd
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/fmacros.h b/src/fmacros.h
-index 6e56c75..d490aec 100644
+index 6e56c759dd5d..d490aec2d6fa 100644
 --- a/src/fmacros.h
 +++ b/src/fmacros.h
 @@ -41,7 +41,7 @@
