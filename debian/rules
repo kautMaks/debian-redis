@@ -21,6 +21,7 @@ endif
 
 override_dh_auto_install:
 	debian/bin/generate-parts
+	debian/bin/generate-systemd-service-files
 
 override_dh_auto_build:
 	dh_auto_build --parallel -- V=1
@@ -36,7 +37,7 @@ endif
 
 override_dh_auto_clean:
 	dh_auto_clean
-	rm -f src/release.h
+	rm -f src/release.h debian/*.service
 
 override_dh_compress:
 	dh_compress -Xredis-trib.rb

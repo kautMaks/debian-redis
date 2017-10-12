@@ -8,7 +8,7 @@ Subject: Set Debian configuration defaults.
  2 files changed, 10 insertions(+), 6 deletions(-)
 
 diff --git a/redis.conf b/redis.conf
-index c54dba3924e0..f487a4b30ade 100644
+index c54dba3924e0..7cf1830c721b 100644
 --- a/redis.conf
 +++ b/redis.conf
 @@ -106,7 +106,7 @@ tcp-backlog 511
@@ -16,7 +16,7 @@ index c54dba3924e0..f487a4b30ade 100644
  # on a unix socket when not specified.
  #
 -# unixsocket /tmp/redis.sock
-+# unixsocket /var/run/redis/redis.sock
++# unixsocket /var/run/redis/redis-server.sock
  # unixsocketperm 700
  
  # Close the connection after a client is idle for N seconds (0 to disable)
