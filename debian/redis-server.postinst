@@ -43,4 +43,10 @@ esac
 
 #DEBHELPER#
 
+case "${1}" in
+	configure)
+		find /etc/redis -maxdepth 1 -type d -name 'redis-server.*.d' -empty -delete
+		;;
+esac
+
 exit 0

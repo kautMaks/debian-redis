@@ -73,6 +73,7 @@ Documentation=http://redis.io/documentation, man:${BINARY}(1)
 [Service]
 Type=forking
 ExecStart=/usr/bin/${BINARY} /etc/redis/${NAMESPACED}.conf
+ExecStop=/bin/kill -s TERM \$MAINPID
 PIDFile=/var/run/${NAMESPACED}/${BINARY}.pid
 TimeoutStopSec=0
 Restart=always
@@ -80,12 +81,6 @@ User=redis
 Group=redis
 RuntimeDirectory=${NAMESPACED}
 RuntimeDirectoryMode=2755
-
-ExecStartPre=-/bin/run-parts --verbose /etc/redis/${BINARY}.pre-up.d
-ExecStartPost=-/bin/run-parts --verbose /etc/redis/${BINARY}.post-up.d
-ExecStop=-/bin/run-parts --verbose /etc/redis/${BINARY}.pre-down.d
-ExecStop=/bin/kill -s TERM \$MAINPID
-ExecStopPost=-/bin/run-parts --verbose /etc/redis/${BINARY}.post-down.d
 
 UMask=007
 PrivateTmp=yes
