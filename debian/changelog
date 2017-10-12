@@ -1,3 +1,17 @@
+redis (4:4.0.2-3) unstable; urgency=medium
+
+  * Drop Debian-specific support for
+    /etc/redis/redis-{server,sentinel}.{pre,post}-{up,down}.d and remove them
+    if unchanged.
+  * Include systemd redis-server@.service and redis-sentinel@.service template
+    files to easily run multiple instances. (Closes: #877702)
+  * Patch redis.conf and sentinel.conf with quilt instead of maintaining our
+    own versions under debian/.
+  * Refresh all patches.
+  * Bump Standards-Version to 4.1.1.
+
+ -- Chris Lamb <lamby@debian.org>  Thu, 12 Oct 2017 14:54:27 -0400
+
 redis (4:4.0.2-2) unstable; urgency=medium
 
   * Update 0004-redis-check-rdb test to ensure that redis.rdb exists before
