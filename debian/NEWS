@@ -1,7 +1,7 @@
 redis (4:4.0.2-3) unstable; urgency=medium
 
   This version drops the Debian-specific support for the
-  /etc/redis/redis-{server}.sentinel.{pre,post}-{up,down}.d directories in
+  /etc/redis/redis-{server,sentinel}.{pre,post}-{up,down}.d directories in
   favour of using systemd's ExecStartPre, ExecStartPost, ExecStopPre,
   ExecStopPost commands.
 
