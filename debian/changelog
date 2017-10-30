@@ -1,3 +1,16 @@
+redis (4:4.0.2-4) unstable; urgency=medium
+
+  * CVE-2017-15047: Add input validity checking to redis cluster config slot
+    numbers. (Closes: #878076)
+  * Drop debian/bin/generate-parts script now we aren't calling it.
+  * Correct Bash-esque in NEWS.
+  * Upstream are not providing signed tarballs, so ignore the
+    "debian-watch-may-check-gpg-signature" Lintian tag,
+  * Drop trailing whitespace in debian/changelog.
+  * Use HTTPS URI in debian/watch.
+
+ -- Chris Lamb <lamby@debian.org>  Mon, 30 Oct 2017 10:32:04 +0000
+
 redis (4:4.0.2-3) unstable; urgency=medium
 
   * Drop Debian-specific support for
