@@ -5,4 +5,4 @@ debian-packaging/0003-dpkg-buildflags.patch
 debian-packaging/0005-Skip-logging-tests-as-not-all-architectures-support-.patch
 debian-packaging/0006-Drop-tests-with-timing-issues.patch
 debian-packaging/0007-Set-Debian-configuration-defaults.patch
-0008-Add-input-validity-checking-to-redis-cluster-config-.patch
+0008-CVE-2017-15047-Fix-buffer-overflows-occurring-readin.patch
