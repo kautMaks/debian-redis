@@ -1,3 +1,10 @@
+redis (4:4.0.2-6) unstable; urgency=medium
+
+  * Correct locations of redis-sentinel pidfiles. Thanks to Nicolas Payart for
+    the patch. (Closes: #880980)
+
+ -- Chris Lamb <lamby@debian.org>  Mon, 06 Nov 2017 22:02:19 +0000
+
 redis (4:4.0.2-5) unstable; urgency=medium
 
   * CVE-2017-15047: Replace existing patch with upstream-blessed version that
