@@ -64,7 +64,7 @@ index 0e1b266edee7..94f6f12f4842 100644
  # Example sentinel.conf
  
 +daemonize yes
-+pidfile /var/run/redis/redis-sentinel.pid
++pidfile /var/run/sentinel/redis-sentinel.pid
 +logfile /var/log/redis/redis-sentinel.log
 +
  # *** IMPORTANT ***

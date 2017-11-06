@@ -18,7 +18,7 @@ DAEMON_ARGS=/etc/redis/sentinel.conf
 NAME=redis-sentinel
 DESC=redis-sentinel
 
-RUNDIR=/var/run/redis
+RUNDIR=/var/run/sentinel
 PIDFILE=$RUNDIR/redis-sentinel.pid
 
 test -x $DAEMON || exit 0
