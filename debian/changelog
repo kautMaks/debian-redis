@@ -1,3 +1,10 @@
+redis (4:4.0.2-7) unstable; urgency=medium
+
+  * Add a "redis" metapackage. (Closes: #876475)
+  * Drop conditionally exporting FORCE_LIBC_MALLOC; upstreamed since 2.6.0-1.
+
+ -- Chris Lamb <lamby@debian.org>  Sun, 12 Nov 2017 08:54:24 +0000
+
 redis (4:4.0.2-6) unstable; urgency=medium
 
   * Correct locations of redis-sentinel pidfiles. Thanks to Nicolas Payart for
