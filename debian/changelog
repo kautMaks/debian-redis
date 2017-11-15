@@ -1,3 +1,14 @@
+redis (4:4.0.2-8) unstable; urgency=medium
+
+  * Use get_current_dir_name over PATHMAX, etc. (Closes: #881684)
+  * Don't rely on taskset existing for kFreeBSD-*. (Closes: #881683)
+  * Drop "memory efficiency" tests on advice from upstream. (Closes: #881682)
+  * Correct BSD-3-clause -> BSD-2-clause for Marc Alexander Lehmann's
+    attribution in debian/copyright.
+  * Let package be bin-NMUable.
+
+ -- Chris Lamb <lamby@debian.org>  Thu, 16 Nov 2017 03:50:00 +0900
+
 redis (4:4.0.2-7) unstable; urgency=medium
 
   * Add a "redis" metapackage. (Closes: #876475)
