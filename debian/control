@@ -15,7 +15,10 @@ Vcs-Browser: https://github.com/lamby/pkg-redis
 
 Package: redis
 Architecture: all
-Depends: redis-server (= ${binary:Version}), ${misc:Depends}
+Depends:
+ redis-server (<< ${binary:Version}.1~),
+ redis-server (>= ${binary:Version}),
+ ${misc:Depends},
 Description: Persistent key-value database with network interface (meta-package)
  Redis is a key-value database in a similar vein to memcache but the dataset
  is non-volatile. Redis additionally provides native support for atomically
