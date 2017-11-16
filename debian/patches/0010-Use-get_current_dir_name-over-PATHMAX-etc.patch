@@ -3,9 +3,37 @@ Date: Thu, 16 Nov 2017 03:40:26 +0900
 Subject: Use get_current_dir_name over PATHMAX, etc.
 
 ---
+ src/aof.c | 5 ++---
  src/rdb.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
+diff --git a/src/aof.c b/src/aof.c
+index 0593b2707bf7..8e71d0a12a3d 100644
+--- a/src/aof.c
++++ b/src/aof.c
+@@ -236,13 +236,11 @@ void stopAppendOnly(void) {
+ /* Called when the user switches from "appendonly no" to "appendonly yes"
+  * at runtime using the CONFIG command. */
+ int startAppendOnly(void) {
+-    char cwd[MAXPATHLEN]; /* Current working dir path for error messages. */
+-
+     server.aof_last_fsync = server.unixtime;
+     server.aof_fd = open(server.aof_filename,O_WRONLY|O_APPEND|O_CREAT,0644);
+     serverAssert(server.aof_state == AOF_OFF);
+     if (server.aof_fd == -1) {
+-        char *cwdp = getcwd(cwd,MAXPATHLEN);
++        char *cwdp = get_current_dir_name();
+ 
+         serverLog(LL_WARNING,
+             "Redis needs to enable the AOF but can't open the "
+@@ -250,6 +248,7 @@ int startAppendOnly(void) {
+             server.aof_filename,
+             cwdp ? cwdp : "unknown",
+             strerror(errno));
++	zfree(cwdp);
+         return C_ERR;
+     }
+     if (server.rdb_child_pid != -1) {
 diff --git a/src/rdb.c b/src/rdb.c
 index 125df6071429..fad4094fa823 100644
 --- a/src/rdb.c
