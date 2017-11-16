@@ -57,7 +57,7 @@ index c54dba3924e0..7cf1830c721b 100644
  ################################# REPLICATION #################################
  
 diff --git a/sentinel.conf b/sentinel.conf
-index 0e1b266edee7..94f6f12f4842 100644
+index 0e1b266edee7..777d0b1750d3 100644
 --- a/sentinel.conf
 +++ b/sentinel.conf
 @@ -1,5 +1,9 @@
