@@ -1,3 +1,9 @@
+redis (4:4.0.2-9) unstable; urgency=medium
+
+  * Also update aof.c for MAXPATHLEN issues. (Closes: #881684)
+
+ -- Chris Lamb <lamby@debian.org>  Thu, 16 Nov 2017 10:21:37 +0900
+
 redis (4:4.0.2-8) unstable; urgency=medium
 
   * Use get_current_dir_name over PATHMAX, etc. (Closes: #881684)
