@@ -358,6 +358,13 @@ int luaRedisGenericCommand(lua_State *lua, int raise_error) {
     static size_t cached_objects_len[LUA_CMD_OBJCACHE_SIZE];
     static int inuse = 0;   /* Recursive calls detection. */
 
+    /* Reflect MULTI state */
+    if (server.lua_multi_emitted || (server.lua_caller->flags & CLIENT_MULTI)) {
+        c->flags |= CLIENT_MULTI;
+    } else {
+        c->flags &= ~CLIENT_MULTI;
+    }
+
     /* By using Lua debug hooks it is possible to trigger a recursive call
      * to luaRedisGenericCommand(), which normally should never happen.
      * To make this function reentrant is futile and makes it slower, but
@@ -535,6 +542,7 @@ int luaRedisGenericCommand(lua_State *lua, int raise_error) {
      * a Lua script in the context of AOF and slaves. */
     if (server.lua_replicate_commands &&
         !server.lua_multi_emitted &&
+        !(server.lua_caller->flags & CLIENT_MULTI) &&
         server.lua_write_dirty &&
         server.lua_repl != PROPAGATE_NONE)
     {
@@ -1139,11 +1147,32 @@ int redis_math_randomseed (lua_State *L) {
  *
  *   f_<hex sha1 sum>
  *
+ * If 'funcname' is NULL, the function name is created by the function
+ * on the fly doing the SHA1 of the body, this means that passing the funcname
+ * is just an optimization in case it's already at hand.
+ *
+ * if 'allow_dup' is true, the function can be called with a script already
+ * in memory without crashing in assert(). In this case C_OK is returned.
+ *
+ * The function increments the reference count of the 'body' object as a
+ * side effect of a successful call.
+ *
  * On success C_OK is returned, and nothing is left on the Lua stack.
  * On error C_ERR is returned and an appropriate error is set in the
  * client context. */
-int luaCreateFunction(client *c, lua_State *lua, char *funcname, robj *body) {
+int luaCreateFunction(client *c, lua_State *lua, char *funcname, robj *body, int allow_dup) {
     sds funcdef = sdsempty();
+    char fname[43];
+
+    if (funcname == NULL) {
+        fname[0] = 'f';
+        fname[1] = '_';
+        sha1hex(fname+2,body->ptr,sdslen(body->ptr));
+        funcname = fname;
+    }
+
+    if (allow_dup && dictFind(server.lua_scripts,funcname+2) != NULL)
+        return C_OK;
 
     funcdef = sdscat(funcdef,"function ");
     funcdef = sdscatlen(funcdef,funcname,42);
@@ -1152,16 +1181,21 @@ int luaCreateFunction(client *c, lua_State *lua, char *funcname, robj *body) {
     funcdef = sdscatlen(funcdef,"\nend",4);
 
     if (luaL_loadbuffer(lua,funcdef,sdslen(funcdef),"@user_script")) {
-        addReplyErrorFormat(c,"Error compiling script (new function): %s\n",
-            lua_tostring(lua,-1));
+        if (c != NULL) {
+            addReplyErrorFormat(c,
+                "Error compiling script (new function): %s\n",
+                lua_tostring(lua,-1));
+        }
         lua_pop(lua,1);
         sdsfree(funcdef);
         return C_ERR;
     }
     sdsfree(funcdef);
     if (lua_pcall(lua,0,0,0)) {
-        addReplyErrorFormat(c,"Error running script (new function): %s\n",
-            lua_tostring(lua,-1));
+        if (c != NULL) {
+            addReplyErrorFormat(c,"Error running script (new function): %s\n",
+                lua_tostring(lua,-1));
+        }
         lua_pop(lua,1);
         return C_ERR;
     }
@@ -1172,7 +1206,7 @@ int luaCreateFunction(client *c, lua_State *lua, char *funcname, robj *body) {
     {
         int retval = dictAdd(server.lua_scripts,
                              sdsnewlen(funcname+2,40),body);
-        serverAssertWithInfo(c,NULL,retval == DICT_OK);
+        serverAssertWithInfo(c ? c : server.lua_client,NULL,retval == DICT_OK);
         incrRefCount(body);
     }
     return C_OK;
@@ -1274,7 +1308,7 @@ void evalGenericCommand(client *c, int evalsha) {
             addReply(c, shared.noscripterr);
             return;
         }
-        if (luaCreateFunction(c,lua,funcname,c->argv[1]) == C_ERR) {
+        if (luaCreateFunction(c,lua,funcname,c->argv[1],0) == C_ERR) {
             lua_pop(lua,1); /* remove the error handler from the stack. */
             /* The error is sent to the client by luaCreateFunction()
              * itself when it returns C_ERR. */
@@ -1446,7 +1480,7 @@ void scriptCommand(client *c) {
         sha1hex(funcname+2,c->argv[2]->ptr,sdslen(c->argv[2]->ptr));
         sha = sdsnewlen(funcname+2,40);
         if (dictFind(server.lua_scripts,sha) == NULL) {
-            if (luaCreateFunction(c,server.lua,funcname,c->argv[2])
+            if (luaCreateFunction(c,server.lua,funcname,c->argv[2],0)
                     == C_ERR) {
                 sdsfree(sha);
                 return;
