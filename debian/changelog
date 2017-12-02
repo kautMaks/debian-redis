@@ -1,8 +1,12 @@
-redis (5:4.0.5-1) UNRELEASED; urgency=medium
+redis (5:4.0.5-1) unstable; urgency=medium
 
   * New upstream release.
+  * debian/control: Use "metapackage" over "meta-package".
+  * debian/patches:
+    - Drop 0008-CVE-2017-15047-Fix-buffer-overflows-occurring-readin.
+    - Refresh.
 
- -- Chris Lamb <lamby@debian.org>  Sat, 02 Dec 2017 18:50:34 +0000
+ -- Chris Lamb <lamby@debian.org>  Sat, 02 Dec 2017 18:54:58 +0000
 
 redis (4:4.0.2-9) unstable; urgency=medium
 
