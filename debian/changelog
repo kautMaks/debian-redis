@@ -1,3 +1,9 @@
+redis (5:4.0.5-1) UNRELEASED; urgency=medium
+
+  * New upstream release.
+
+ -- Chris Lamb <lamby@debian.org>  Sat, 02 Dec 2017 18:50:34 +0000
+
 redis (4:4.0.2-9) unstable; urgency=medium
 
   * Also update aof.c for MAXPATHLEN issues. (Closes: #881684)
