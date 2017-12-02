@@ -35,10 +35,10 @@ index 0593b2707bf7..8e71d0a12a3d 100644
      }
      if (server.rdb_child_pid != -1) {
 diff --git a/src/rdb.c b/src/rdb.c
-index 125df6071429..fad4094fa823 100644
+index a0309aa766f0..5a7c6345ec84 100644
 --- a/src/rdb.c
 +++ b/src/rdb.c
-@@ -987,7 +987,6 @@ werr: /* Write error. */
+@@ -1002,7 +1002,6 @@ werr: /* Write error. */
  /* Save the DB on disk. Return C_ERR on error, C_OK on success. */
  int rdbSave(char *filename, rdbSaveInfo *rsi) {
      char tmpfile[256];
@@ -46,7 +46,7 @@ index 125df6071429..fad4094fa823 100644
      FILE *fp;
      rio rdb;
      int error = 0;
-@@ -995,13 +994,14 @@ int rdbSave(char *filename, rdbSaveInfo *rsi) {
+@@ -1010,13 +1009,14 @@ int rdbSave(char *filename, rdbSaveInfo *rsi) {
      snprintf(tmpfile,256,"temp-%d.rdb", (int) getpid());
      fp = fopen(tmpfile,"w");
      if (!fp) {
@@ -62,7 +62,7 @@ index 125df6071429..fad4094fa823 100644
          return C_ERR;
      }
  
-@@ -1019,7 +1019,7 @@ int rdbSave(char *filename, rdbSaveInfo *rsi) {
+@@ -1034,7 +1034,7 @@ int rdbSave(char *filename, rdbSaveInfo *rsi) {
      /* Use RENAME to make sure the DB file is changed atomically only
       * if the generate DB file is ok. */
      if (rename(tmpfile,filename) == -1) {
@@ -71,7 +71,7 @@ index 125df6071429..fad4094fa823 100644
          serverLog(LL_WARNING,
              "Error moving temp DB file %s on the final "
              "destination %s (in server root dir %s): %s",
-@@ -1027,6 +1027,7 @@ int rdbSave(char *filename, rdbSaveInfo *rsi) {
+@@ -1042,6 +1042,7 @@ int rdbSave(char *filename, rdbSaveInfo *rsi) {
              filename,
              cwdp ? cwdp : "unknown",
              strerror(errno));
