@@ -6,47 +6,19 @@ USER="redis"
 GROUP="$USER"
 CONFFILE="/etc/redis/redis.conf"
 
-case "${1}" in
-	configure)
-		adduser \
-			--system \
-			--home /var/lib/redis \
-			--quiet \
-			--group \
-			${USER} || true
-
-		for DIR in /var/lib/redis /var/log/redis
-		do
-			mkdir -p ${DIR}
-
-			if ! dpkg-statoverride --list ${DIR} >/dev/null 2>&1
-			then
-				chown -R ${USER}:${GROUP} ${DIR}
-				chmod 750 ${DIR}
-			fi
-		done
-
-		if ! dpkg-statoverride --list ${CONFFILE} >/dev/null 2>&1
-		then
-			dpkg-statoverride --update --add ${USER} ${GROUP} 640 ${CONFFILE}
-		fi
-		;;
-
-	abort-upgrade|abort-remove|abort-deconfigure)
-		;;
-
-	*)
-		echo "postinst called with unknown argument \`${1}'" >&2
-		exit 1
-		;;
-esac
+if [ "$1" = "configure" ]
+then
+	if ! dpkg-statoverride --list ${CONFFILE} >/dev/null 2>&1
+	then
+		dpkg-statoverride --update --add ${USER} ${GROUP} 640 ${CONFFILE}
+	fi
+fi
 
 #DEBHELPER#
 
-case "${1}" in
-	configure)
-		find /etc/redis -maxdepth 1 -type d -name 'redis-server.*.d' -empty -delete
-		;;
-esac
+if [ "$1" = "configure" ]
+then
+	find /etc/redis -maxdepth 1 -type d -name 'redis-server.*.d' -empty -delete
+fi
 
 exit 0
