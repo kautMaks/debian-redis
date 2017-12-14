@@ -1,3 +1,13 @@
+redis (5:4.0.6-2) unstable; urgency=medium
+
+  * Replace redis-sentinel's main dependency with redis-tools from
+    redis-server, necessarily moving the creating/deletion of the "redis" user
+    and associated data and log directories to redis-tools. (Closes: #884321)
+  * Add stub manpages for redis-sentinel, redis-check-aof and redis-check-rdb.
+  * Bump Standards-Version to 4.1.2.
+
+ -- Chris Lamb <lamby@debian.org>  Thu, 14 Dec 2017 10:08:30 +0000
+
 redis (5:4.0.6-1) unstable; urgency=medium
 
   * New upstream bugfix release.
