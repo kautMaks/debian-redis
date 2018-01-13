@@ -1,3 +1,11 @@
+redis (5:4.0.6-3) unstable; urgency=medium
+
+  * Use --clients argument to runtest to force single-threaded operation over
+    using taskset.
+  * Bump Standards-Version to 4.1.3.
+
+ -- Chris Lamb <lamby@debian.org>  Sat, 13 Jan 2018 12:55:27 +0530
+
 redis (5:4.0.6-2) unstable; urgency=medium
 
   * Replace redis-sentinel's main dependency with redis-tools from
