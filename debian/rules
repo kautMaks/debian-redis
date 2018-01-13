@@ -23,13 +23,12 @@ override_dh_auto_build:
 
 override_dh_auto_test:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-ifneq ($(wildcard /usr/bin/taskset),)
 	# Avoid race conditions in upstream testsuite. (#830500)
-	taskset --cpu-list 0 ./runtest
+	./runtest --clients 1
 	# Sentinel integration tests use too many timers to be reliable or
 	# meaningful.
-	taskset --cpu-list 0 ./runtest-sentinel || true
-endif
+	./runtest-cluster || true
+	./runtest-sentinel || true
 endif
 
 override_dh_auto_clean:
