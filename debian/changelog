@@ -1,3 +1,9 @@
+redis (5:4.0.6-4) unstable; urgency=medium
+
+  * Re-add procps to Build-Depends. (Closes: #887075)
+
+ -- Chris Lamb <lamby@debian.org>  Sat, 13 Jan 2018 19:01:56 +0530
+
 redis (5:4.0.6-3) unstable; urgency=medium
 
   * Use --clients argument to runtest to force single-threaded operation over
