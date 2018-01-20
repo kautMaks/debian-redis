@@ -13,7 +13,7 @@ ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 endif
 
 %:
-	dh $@ --with systemd
+	dh $@
 
 override_dh_auto_install:
 	debian/bin/generate-systemd-service-files
