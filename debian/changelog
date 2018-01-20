@@ -1,3 +1,15 @@
+redis (5:4.0.6-5) unstable; urgency=medium
+
+  * Update redis-sentinel's symlink to usr/bin/redis-check-rdb to match
+    redis-server. This avoids a dangling symlink (and thus a broken package) if
+    redis-server is not installed. (Closes: #884321)
+  * Move to debhelper compat level 11.
+    - Drop reference to --with=systemd - systemd-sequence is no longer provided
+      in compat >= 11.
+  * Use https URI for copyright format specification in debian/copyright.
+
+ -- Chris Lamb <lamby@debian.org>  Sat, 20 Jan 2018 11:21:11 +1100
+
 redis (5:4.0.6-4) unstable; urgency=medium
 
   * Re-add procps to Build-Depends. (Closes: #887075)
