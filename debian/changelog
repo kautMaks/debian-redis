@@ -1,9 +1,10 @@
-redis (5:4.0.7-1) UNRELEASED; urgency=medium
+redis (5:4.0.7-1) unstable; urgency=medium
 
   * New upstream release.
     <https://groups.google.com/forum/#!topic/redis-db/gngqHoh-kRM>
+  * Refresh patches.
 
- -- Chris Lamb <lamby@debian.org>  Wed, 24 Jan 2018 21:47:56 +1100
+ -- Chris Lamb <lamby@debian.org>  Wed, 24 Jan 2018 22:10:06 +1100
 
 redis (5:4.0.6-5) unstable; urgency=medium
 
