@@ -8,7 +8,7 @@ Subject: Set Debian configuration defaults.
  2 files changed, 10 insertions(+), 6 deletions(-)
 
 diff --git a/redis.conf b/redis.conf
-index 7afd35a474be..1a163ef3310e 100644
+index 53984826d5bc..27e5b6a95169 100644
 --- a/redis.conf
 +++ b/redis.conf
 @@ -106,7 +106,7 @@ tcp-backlog 511

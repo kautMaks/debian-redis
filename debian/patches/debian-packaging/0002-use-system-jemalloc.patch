@@ -26,7 +26,7 @@ index 86e0b3fe0602..f7b8cba5c339 100644
  
  REDIS_CC=$(QUIET_CC)$(CC) $(FINAL_CFLAGS)
 diff --git a/src/object.c b/src/object.c
-index d2f8d53c5a91..42f68d7c5f8c 100644
+index 910410b05d11..70251aa8214d 100644
 --- a/src/object.c
 +++ b/src/object.c
 @@ -36,6 +36,9 @@

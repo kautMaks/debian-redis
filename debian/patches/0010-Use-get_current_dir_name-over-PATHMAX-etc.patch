@@ -1,44 +1,38 @@
 From: Chris Lamb <lamby@debian.org>
-Date: Thu, 16 Nov 2017 03:40:26 +0900
+Date: Wed, 24 Jan 2018 22:06:35 +1100
 Subject: Use get_current_dir_name over PATHMAX, etc.
 
 ---
- src/aof.c | 5 ++---
+ src/aof.c | 3 ++-
  src/rdb.c | 7 ++++---
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
 diff --git a/src/aof.c b/src/aof.c
-index 0593b2707bf7..8e71d0a12a3d 100644
+index c085d77e9068..5908bfd40867 100644
 --- a/src/aof.c
 +++ b/src/aof.c
-@@ -236,13 +236,11 @@ void stopAppendOnly(void) {
- /* Called when the user switches from "appendonly no" to "appendonly yes"
-  * at runtime using the CONFIG command. */
- int startAppendOnly(void) {
--    char cwd[MAXPATHLEN]; /* Current working dir path for error messages. */
--
-     server.aof_last_fsync = server.unixtime;
-     server.aof_fd = open(server.aof_filename,O_WRONLY|O_APPEND|O_CREAT,0644);
+@@ -242,7 +242,7 @@ int startAppendOnly(void) {
+     newfd = open(server.aof_filename,O_WRONLY|O_APPEND|O_CREAT,0644);
      serverAssert(server.aof_state == AOF_OFF);
-     if (server.aof_fd == -1) {
+     if (newfd == -1) {
 -        char *cwdp = getcwd(cwd,MAXPATHLEN);
 +        char *cwdp = get_current_dir_name();
  
          serverLog(LL_WARNING,
              "Redis needs to enable the AOF but can't open the "
-@@ -250,6 +248,7 @@ int startAppendOnly(void) {
+@@ -250,6 +250,7 @@ int startAppendOnly(void) {
              server.aof_filename,
              cwdp ? cwdp : "unknown",
              strerror(errno));
-+	zfree(cwdp);
++        zfree(cwdp);
          return C_ERR;
      }
      if (server.rdb_child_pid != -1) {
 diff --git a/src/rdb.c b/src/rdb.c
-index a0309aa766f0..5a7c6345ec84 100644
+index 68bfb90bf23e..b33826b40ba8 100644
 --- a/src/rdb.c
 +++ b/src/rdb.c
-@@ -1002,7 +1002,6 @@ werr: /* Write error. */
+@@ -1006,7 +1006,6 @@ werr: /* Write error. */
  /* Save the DB on disk. Return C_ERR on error, C_OK on success. */
  int rdbSave(char *filename, rdbSaveInfo *rsi) {
      char tmpfile[256];
@@ -46,7 +40,7 @@ index a0309aa766f0..5a7c6345ec84 100644
      FILE *fp;
      rio rdb;
      int error = 0;
-@@ -1010,13 +1009,14 @@ int rdbSave(char *filename, rdbSaveInfo *rsi) {
+@@ -1014,13 +1013,14 @@ int rdbSave(char *filename, rdbSaveInfo *rsi) {
      snprintf(tmpfile,256,"temp-%d.rdb", (int) getpid());
      fp = fopen(tmpfile,"w");
      if (!fp) {
@@ -62,7 +56,7 @@ index a0309aa766f0..5a7c6345ec84 100644
          return C_ERR;
      }
  
-@@ -1034,7 +1034,7 @@ int rdbSave(char *filename, rdbSaveInfo *rsi) {
+@@ -1038,7 +1038,7 @@ int rdbSave(char *filename, rdbSaveInfo *rsi) {
      /* Use RENAME to make sure the DB file is changed atomically only
       * if the generate DB file is ok. */
      if (rename(tmpfile,filename) == -1) {
@@ -71,7 +65,7 @@ index a0309aa766f0..5a7c6345ec84 100644
          serverLog(LL_WARNING,
              "Error moving temp DB file %s on the final "
              "destination %s (in server root dir %s): %s",
-@@ -1042,6 +1042,7 @@ int rdbSave(char *filename, rdbSaveInfo *rsi) {
+@@ -1046,6 +1046,7 @@ int rdbSave(char *filename, rdbSaveInfo *rsi) {
              filename,
              cwdp ? cwdp : "unknown",
              strerror(errno));
