@@ -1,9 +1,14 @@
-redis (5:4.0.8-1) UNRELEASED; urgency=medium
+redis (5:4.0.8-1) unstable; urgency=medium
 
   * New upstream release.
     <https://groups.google.com/forum/#!topic/redis-db/FGplxMEGEMo>
+  * Update lintian overrides after rename of
+    debian-watch-may-check-gpg-signature →
+    debian-watch-does-not-check-gpg-signature.
+  * Drop "recursive" argument to chown in postinst script to prevent hardlink
+    vulnerability.
 
- -- Chris Lamb <lamby@debian.org>  Mon, 05 Feb 2018 17:05:25 +0000
+ -- Chris Lamb <lamby@debian.org>  Mon, 05 Feb 2018 17:09:44 +0000
 
 redis (5:4.0.7-1) unstable; urgency=medium
 
