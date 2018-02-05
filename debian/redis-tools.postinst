@@ -20,7 +20,7 @@ then
 
 		if ! dpkg-statoverride --list ${DIR} >/dev/null 2>&1
 		then
-			chown -R ${USER}:${GROUP} ${DIR}
+			chown ${USER}:${GROUP} ${DIR}
 			chmod 750 ${DIR}
 		fi
 	done
