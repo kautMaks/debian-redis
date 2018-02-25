@@ -3,14 +3,23 @@ Date: Tue, 10 Oct 2017 09:56:42 +0100
 Subject: Set Debian configuration defaults.
 
 ---
- redis.conf    | 10 +++++-----
+ redis.conf    | 12 ++++++------
  sentinel.conf |  6 +++++-
- 2 files changed, 10 insertions(+), 6 deletions(-)
+ 2 files changed, 11 insertions(+), 7 deletions(-)
 
 diff --git a/redis.conf b/redis.conf
-index 53984826d5bc..27e5b6a95169 100644
+index 53984826d5bc..12b17a7ffefe 100644
 --- a/redis.conf
 +++ b/redis.conf
+@@ -66,7 +66,7 @@
+ # IF YOU ARE SURE YOU WANT YOUR INSTANCE TO LISTEN TO ALL THE INTERFACES
+ # JUST COMMENT THE FOLLOWING LINE.
+ # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-bind 127.0.0.1
++bind 127.0.0.1 ::1
+ 
+ # Protected mode is a layer of security protection, in order to avoid that
+ # Redis instances left open on the internet are accessed and exploited.
 @@ -106,7 +106,7 @@ tcp-backlog 511
  # incoming connections. There is no default, so Redis will not listen
  # on a unix socket when not specified.
