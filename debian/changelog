@@ -1,3 +1,9 @@
+redis (5:4.0.8-2) unstable; urgency=medium
+
+  * Also listen on ::1 for IPv6 by default. (Closes: #891432)
+
+ -- Chris Lamb <lamby@debian.org>  Sun, 25 Feb 2018 14:59:55 +0000
+
 redis (5:4.0.8-1) unstable; urgency=medium
 
   * New upstream release.
