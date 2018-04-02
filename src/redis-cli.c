@@ -2074,7 +2074,9 @@ static void pipeMode(void) {
 #define TYPE_SET    2
 #define TYPE_HASH   3
 #define TYPE_ZSET   4
-#define TYPE_NONE   5
+#define TYPE_STREAM 5
+#define TYPE_NONE   6
+#define TYPE_COUNT  7
 
 static redisReply *sendScan(unsigned long long *it) {
     redisReply *reply = redisCommand(context, "SCAN %llu", *it);
@@ -2218,11 +2220,11 @@ static void getKeySizes(redisReply *keys, int *types,
 }
 
 static void findBigKeys(void) {
-    unsigned long long biggest[5] = {0}, counts[5] = {0}, totalsize[5] = {0};
+    unsigned long long biggest[TYPE_COUNT] = {0}, counts[TYPE_COUNT] = {0}, totalsize[TYPE_COUNT] = {0};
     unsigned long long sampled = 0, total_keys, totlen=0, *sizes=NULL, it=0;
-    sds maxkeys[5] = {0};
-    char *typename[] = {"string","list","set","hash","zset"};
-    char *typeunit[] = {"bytes","items","members","fields","members"};
+    sds maxkeys[TYPE_COUNT] = {0};
+    char *typename[] = {"string","list","set","hash","zset","stream","none"};
+    char *typeunit[] = {"bytes","items","members","fields","members","entries",""};
     redisReply *reply, *keys;
     unsigned int arrsize=0, i;
     int type, *types=NULL;
