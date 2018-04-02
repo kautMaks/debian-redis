@@ -8,7 +8,7 @@ Subject: Set Debian configuration defaults.
  2 files changed, 11 insertions(+), 7 deletions(-)
 
 diff --git a/redis.conf b/redis.conf
-index 53984826d5bc..12b17a7ffefe 100644
+index 43562c5bc42a..a27c4b9c8359 100644
 --- a/redis.conf
 +++ b/redis.conf
 @@ -66,7 +66,7 @@

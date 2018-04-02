@@ -8,10 +8,10 @@ Subject: Use get_current_dir_name over PATHMAX, etc.
  2 files changed, 6 insertions(+), 4 deletions(-)
 
 diff --git a/src/aof.c b/src/aof.c
-index c085d77e9068..5908bfd40867 100644
+index 486749f11711..bc3deec292c0 100644
 --- a/src/aof.c
 +++ b/src/aof.c
-@@ -242,7 +242,7 @@ int startAppendOnly(void) {
+@@ -246,7 +246,7 @@ int startAppendOnly(void) {
      newfd = open(server.aof_filename,O_WRONLY|O_APPEND|O_CREAT,0644);
      serverAssert(server.aof_state == AOF_OFF);
      if (newfd == -1) {
@@ -20,7 +20,7 @@ index c085d77e9068..5908bfd40867 100644
  
          serverLog(LL_WARNING,
              "Redis needs to enable the AOF but can't open the "
-@@ -250,6 +250,7 @@ int startAppendOnly(void) {
+@@ -254,6 +254,7 @@ int startAppendOnly(void) {
              server.aof_filename,
              cwdp ? cwdp : "unknown",
              strerror(errno));
@@ -29,7 +29,7 @@ index c085d77e9068..5908bfd40867 100644
      }
      if (server.rdb_child_pid != -1) {
 diff --git a/src/rdb.c b/src/rdb.c
-index 68bfb90bf23e..b33826b40ba8 100644
+index 37821e28e0b5..4b0d2aca9e73 100644
 --- a/src/rdb.c
 +++ b/src/rdb.c
 @@ -1006,7 +1006,6 @@ werr: /* Write error. */
