@@ -1,8 +1,9 @@
-redis (5:4.0.9-1) UNRELEASED; urgency=medium
+redis (5:4.0.9-1) unstable; urgency=medium
 
   * New upstream release.
+  * Refresh all patches.
 
- -- Chris Lamb <lamby@debian.org>  Mon, 02 Apr 2018 20:34:24 +0100
+ -- Chris Lamb <lamby@debian.org>  Mon, 02 Apr 2018 20:37:12 +0100
 
 redis (5:4.0.8-2) unstable; urgency=medium
 
