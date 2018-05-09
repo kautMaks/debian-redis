@@ -1,3 +1,10 @@
+redis (5:4.0.9-2) unstable; urgency=medium
+
+  * Ignore test failures on problematic archs.
+  * Bump Standards-Version to 4.1.4.
+
+ -- Chris Lamb <lamby@debian.org>  Tue, 08 May 2018 23:08:36 -0700
+
 redis (5:4.0.9-1) unstable; urgency=medium
 
   * New upstream release.
