@@ -1,3 +1,10 @@
+redis (5:4.0.9-3) unstable; urgency=medium
+
+  * Make /var/log/redis, etc. owned by root:adm, not root:root. Thanks to
+    Thomas Goirand. (Closes: #900496)
+
+ -- Chris Lamb <lamby@debian.org>  Fri, 01 Jun 2018 08:56:48 +0100
+
 redis (5:4.0.9-2) unstable; urgency=medium
 
   * Ignore test failures on problematic archs.
