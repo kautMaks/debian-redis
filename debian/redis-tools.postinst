@@ -3,7 +3,31 @@
 set -eu
 
 USER="redis"
-GROUP="$USER"
+
+Setup_dir () {
+	DIR="${1}"
+	MODE="${2}"
+	GROUP="${3}"
+
+	mkdir -p ${DIR}
+
+	case "${DIR}" in
+	/var/log/redis)
+		MODE="02750"
+		GROUP="adm"
+		;;
+	*)
+		MODE="750"
+		GROUP="${USER}"
+		;;
+	esac
+
+	if ! dpkg-statoverride --list ${DIR} >/dev/null 2>&1
+	then
+		chown ${USER}:${GROUP} ${DIR}
+		chmod ${MODE} ${DIR}
+	fi
+}
 
 if [ "$1" = "configure" ]
 then
@@ -14,16 +38,8 @@ then
 		--group \
 		${USER} || true
 
-	for DIR in /var/lib/redis /var/log/redis
-	do
-		mkdir -p ${DIR}
-
-		if ! dpkg-statoverride --list ${DIR} >/dev/null 2>&1
-		then
-			chown ${USER}:${GROUP} ${DIR}
-			chmod 750 ${DIR}
-		fi
-	done
+	Setup_dir /var/log/redis ${USER}:adm 2750
+	Setup_dir /var/lib/redis ${USER}:${USER} 750
 fi
 
 #DEBHELPER#
