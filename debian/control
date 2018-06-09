@@ -9,7 +9,7 @@ Build-Depends:
  procps <!nocheck>,
  tcl <!nocheck>,
 Standards-Version: 4.1.4
-Homepage: http://redis.io/
+Homepage: https://redis.io/
 Vcs-Git: https://salsa.debian.org/lamby/pkg-redis.git
 Vcs-Browser: https://salsa.debian.org/lamby/pkg-redis
 
