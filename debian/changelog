@@ -1,6 +1,6 @@
 redis (5:4.0.10-1) unstable; urgency=medium
 
-  * New upstream security release. See:
+  * CVE-2018-11218, CVE-2018-11219: New upstream security release.
     <https://github.com/antirez/redis/issues/5017> for more information.
     (Closes: #901495)
 
