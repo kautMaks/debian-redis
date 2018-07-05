@@ -1,3 +1,14 @@
+redis (5:4.0.10-2) unstable; urgency=medium
+
+  [ Daniel Shahaf ]
+  * redis-benchmark(1): Fix default of -n argument. (Closes: #903044)
+
+  [ Chris Lamb ]
+  * Add CVE entries to (released) changelog entry.
+  * Bump Standards-Version to 4.1.5.
+
+ -- Chris Lamb <lamby@debian.org>  Thu, 05 Jul 2018 22:14:45 +0200
+
 redis (5:4.0.10-1) unstable; urgency=medium
 
   * CVE-2018-11218, CVE-2018-11219: New upstream security release.
