@@ -1,3 +1,10 @@
+redis (5:4.0.11-1) UNRELEASED; urgency=medium
+
+  * New upstream release.
+    <https://groups.google.com/forum/#!topic/redis-db/aXusvS8da8g>
+
+ -- Chris Lamb <lamby@debian.org>  Mon, 06 Aug 2018 10:51:22 +0800
+
 redis (5:4.0.10-2) unstable; urgency=medium
 
   [ Daniel Shahaf ]
