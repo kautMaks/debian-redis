@@ -1,4 +1,10 @@
-redis (5:4.0.11-1) UNRELEASED; urgency=medium
+redis (5:4.0.14) unstable; urgency=medium
+
+  * Latest 4.0.x upstream release.
+
+ -- kaut <maksimkaut92@gmail.com>  Mon, 19 Aug 2019 12:05:22 +0300
+
+redis (5:4.0.11-1) unstable; urgency=medium
 
   * New upstream release.
     <https://groups.google.com/forum/#!topic/redis-db/aXusvS8da8g>
