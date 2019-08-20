@@ -2,6 +2,8 @@
 
 This repository provides redis debianized source package for Debian Stretch.
 
+Source repository - https://salsa.debian.org/lamby/pkg-redis
+
 ## Install build requirements:
 
 ```
