@@ -9,7 +9,7 @@ Setup_dir () {
 	MODE="${2}"
 	GROUP="${3}"
 
-	mkdir -p ${DIR}
+	mkdir -pZ ${DIR}
 
 	case "${DIR}" in
 	/var/log/redis)

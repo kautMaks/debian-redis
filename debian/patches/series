@@ -1,9 +1,8 @@
 0001-fix-ftbfs-on-kfreebsd.patch
-debian-packaging/0002-use-system-jemalloc.patch
 debian-packaging/0003-dpkg-buildflags.patch
-0004-SOURCE_DATE_EPOCH.patch
-debian-packaging/0005-Skip-logging-tests-as-not-all-architectures-support-.patch
-debian-packaging/0006-Drop-tests-with-timing-issues.patch
 debian-packaging/0007-Set-Debian-configuration-defaults.patch
-0009-Drop-memory-efficiency-tests-on-advice-from-upstream.patch
 0010-Use-get_current_dir_name-over-PATHMAX-etc.patch
+0010-Add-support-for-USE_SYSTEM_JEMALLOC-flag.patch
+0011-Add-support-for-a-USE_SYSTEM_LUA-flag.patch
+0007-Add-support-for-a-USE_SYSTEM_HIREDIS-flag.patch
+debian-packaging/0008-Ensure-we-use-the-modules-for-third-party-libraries.patch

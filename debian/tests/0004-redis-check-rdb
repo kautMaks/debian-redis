@@ -1,10 +1,16 @@
 #!/bin/sh
 #
 # Test redis-check-rdb
+#
+# Currently failing with 6.0.0: https://github.com/antirez/redis/issues/7187
 
 set -eu
 
-# Perform a synchronous save to ensure .rdb file eixsts
+service redis-server restart
+
+sleep 5
+
+# Perform a synchronous save to ensure .rdb file exists
 redis-cli SAVE
 
 redis-check-rdb /var/lib/redis/dump.rdb

@@ -3,15 +3,21 @@ Date: Wed, 24 Jan 2018 22:06:35 +1100
 Subject: Use get_current_dir_name over PATHMAX, etc.
 
 ---
- src/aof.c | 3 ++-
+ src/aof.c | 4 ++--
  src/rdb.c | 7 ++++---
- 2 files changed, 6 insertions(+), 4 deletions(-)
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
 diff --git a/src/aof.c b/src/aof.c
-index 486749f11711..bc3deec292c0 100644
+index 6e2ef5c..cbdd0c7 100644
 --- a/src/aof.c
 +++ b/src/aof.c
-@@ -246,7 +246,7 @@ int startAppendOnly(void) {
+@@ -249,13 +249,12 @@ void stopAppendOnly(void) {
+ /* Called when the user switches from "appendonly no" to "appendonly yes"
+  * at runtime using the CONFIG command. */
+ int startAppendOnly(void) {
+-    char cwd[MAXPATHLEN]; /* Current working dir path for error messages. */
+     int newfd;
+ 
      newfd = open(server.aof_filename,O_WRONLY|O_APPEND|O_CREAT,0644);
      serverAssert(server.aof_state == AOF_OFF);
      if (newfd == -1) {
@@ -20,27 +26,27 @@ index 486749f11711..bc3deec292c0 100644
  
          serverLog(LL_WARNING,
              "Redis needs to enable the AOF but can't open the "
-@@ -254,6 +254,7 @@ int startAppendOnly(void) {
+@@ -263,6 +262,7 @@ int startAppendOnly(void) {
              server.aof_filename,
              cwdp ? cwdp : "unknown",
              strerror(errno));
-+        zfree(cwdp);
++        free(cwdp);
          return C_ERR;
      }
-     if (server.rdb_child_pid != -1) {
+     if (hasActiveChildProcess() && server.aof_child_pid == -1) {
 diff --git a/src/rdb.c b/src/rdb.c
-index 37821e28e0b5..4b0d2aca9e73 100644
+index ee9418c..e8f2ee0 100644
 --- a/src/rdb.c
 +++ b/src/rdb.c
-@@ -1006,7 +1006,6 @@ werr: /* Write error. */
+@@ -1313,7 +1313,6 @@ werr: /* Write error. */
  /* Save the DB on disk. Return C_ERR on error, C_OK on success. */
  int rdbSave(char *filename, rdbSaveInfo *rsi) {
      char tmpfile[256];
 -    char cwd[MAXPATHLEN]; /* Current working dir path for error messages. */
-     FILE *fp;
+     FILE *fp = NULL;
      rio rdb;
      int error = 0;
-@@ -1014,13 +1013,14 @@ int rdbSave(char *filename, rdbSaveInfo *rsi) {
+@@ -1321,13 +1320,14 @@ int rdbSave(char *filename, rdbSaveInfo *rsi) {
      snprintf(tmpfile,256,"temp-%d.rdb", (int) getpid());
      fp = fopen(tmpfile,"w");
      if (!fp) {
@@ -52,11 +58,11 @@ index 37821e28e0b5..4b0d2aca9e73 100644
              filename,
              cwdp ? cwdp : "unknown",
              strerror(errno));
-+        zfree(cwdp);
++        free(cwdp);
          return C_ERR;
      }
  
-@@ -1038,7 +1038,7 @@ int rdbSave(char *filename, rdbSaveInfo *rsi) {
+@@ -1351,7 +1351,7 @@ int rdbSave(char *filename, rdbSaveInfo *rsi) {
      /* Use RENAME to make sure the DB file is changed atomically only
       * if the generate DB file is ok. */
      if (rename(tmpfile,filename) == -1) {
@@ -65,11 +71,11 @@ index 37821e28e0b5..4b0d2aca9e73 100644
          serverLog(LL_WARNING,
              "Error moving temp DB file %s on the final "
              "destination %s (in server root dir %s): %s",
-@@ -1046,6 +1046,7 @@ int rdbSave(char *filename, rdbSaveInfo *rsi) {
+@@ -1359,6 +1359,7 @@ int rdbSave(char *filename, rdbSaveInfo *rsi) {
              filename,
              cwdp ? cwdp : "unknown",
              strerror(errno));
-+        zfree(cwdp);
++        free(cwdp);
          unlink(tmpfile);
+         stopSaving(0);
          return C_ERR;
-     }

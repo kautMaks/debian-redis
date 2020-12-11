@@ -4,4 +4,8 @@
 
 set -eu
 
+service redis-server restart
+
+sleep 5
+
 redis-benchmark -P 10

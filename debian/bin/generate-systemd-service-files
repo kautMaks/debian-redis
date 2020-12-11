@@ -52,7 +52,7 @@ do
 # ... and ensure we are logging, etc. in a unique location:
 #
 #   $ sed -i -e 's@^logfile .*@logfile /var/log/redis/${BINARY}-myname.log@' /etc/redis/${NAME}-myname.conf
-#   $ sed -i -e 's@^pidfile .*@pidfile /var/run/redis-myname/${BINARY}.pid@' /etc/redis/${NAME}-myname.conf
+#   $ sed -i -e 's@^pidfile .*@pidfile /run/redis-myname/${BINARY}.pid@' /etc/redis/${NAME}-myname.conf
 #
 # We can then start the service as follows, validating we are using our own
 # configuration:
@@ -73,8 +73,7 @@ Documentation=http://redis.io/documentation, man:${BINARY}(1)
 [Service]
 Type=forking
 ExecStart=/usr/bin/${BINARY} /etc/redis/${NAMESPACED}.conf
-ExecStop=/bin/kill -s TERM \$MAINPID
-PIDFile=/var/run/${NAMESPACED}/${BINARY}.pid
+PIDFile=/run/${NAMESPACED}/${BINARY}.pid
 TimeoutStopSec=0
 Restart=always
 User=redis
@@ -88,9 +87,9 @@ LimitNOFILE=65535
 PrivateDevices=yes
 ProtectHome=yes
 ReadOnlyDirectories=/
-ReadWriteDirectories=-/var/lib/redis
-ReadWriteDirectories=-/var/log/redis
-ReadWriteDirectories=-/var/run/${NAMESPACED}
+ReadWritePaths=-/var/lib/redis
+ReadWritePaths=-/var/log/redis
+ReadWritePaths=-/var/run/${NAMESPACED}
 
 NoNewPrivileges=true
 CapabilityBoundingSet=CAP_SETGID CAP_SETUID CAP_SYS_RESOURCE

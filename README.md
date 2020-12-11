@@ -20,8 +20,8 @@ git clone https://github.com/kautMaks/debian-redis.git
 ## Get redis sources:
 
 ```
-wget http://download.redis.io/releases/redis-4.0.14.tar.gz
-tar -xvf redis-4.0.14.tar.gz && mv redis-4.0.14/* debian-redis/
+wget http://download.redis.io/releases/redis-6.0.9.tar.gz
+tar -xvf redis-6.0.9.tar.gz && mv redis-6.0.9/* debian-redis/
 cd  debian-redis/
 ```
 

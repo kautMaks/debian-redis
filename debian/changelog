@@ -1,3 +1,10 @@
+redis (5:6.0.9-1) unstable; urgency=medium
+
+  * New upstream release.
+    - Update patches.
+
+ -- kaut <maksimkaut92@gmail.com>  Fri, 11 Dec 2020 13:24:49 +0300
+
 redis (5:4.0.14) unstable; urgency=medium
 
   * Latest 4.0.x upstream release.

@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+# Check we can load/use the cjson extension.
+
+set -eu
+
+service redis-server restart
+
+sleep 5
+
+redis-cli EVAL 'cjson.decode("{}")' 0

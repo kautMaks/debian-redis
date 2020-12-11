@@ -4,4 +4,9 @@
 
 set -eu
 
+service redis-server restart
+
+sleep 5
+
 redis-cli INFO
+redis-cli LOLWUT
