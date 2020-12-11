@@ -17,8 +17,7 @@ LUA_LDFLAGS = $(addprefix -llua5.1-,$(LUA_LIBS_DEBIAN)) $(addprefix ../deps/lua/
 export BUILD_TLS = yes
 export CFLAGS CPPFLAGS LDFLAGS
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
-export DEB_CFLAGS_MAINT_APPEND = -I/usr/include/liblzf
-export DEB_LDFLAGS_MAINT_APPEND = -Wl,-no-as-needed -ldl -latomic -llzf $(LUA_LDFLAGS)
+export DEB_LDFLAGS_MAINT_APPEND = -Wl,-no-as-needed -ldl -latomic $(LUA_LDFLAGS)
 
 # Build jemelloc in parallel
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
